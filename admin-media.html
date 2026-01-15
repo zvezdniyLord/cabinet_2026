@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Управление документами</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .admin-info {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: #ff5252;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .upload-section:hover {
+            border-color: #4361ee;
+        }
+
+        .upload-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: white;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            border-color: #4361ee;
+            background: #f8faff;
+        }
+
+        .file-input-label i {
+            font-size: 40px;
+            color: #4361ee;
+            margin-bottom: 15px;
+        }
+
+        .file-input-label span {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .file-input-label small {
+            color: #999;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .file-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-name {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+            width: auto;
+            margin-top: 0;
+        }
+
+        /* Прогресс бар */
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Список документов */
+        .documents-section {
+            margin-top: 40px;
+        }
+
+        .documents-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .refresh-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #5a6268;
+        }
+
+        .documents-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .documents-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .documents-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f4;
+            vertical-align: middle;
+        }
+
+        .documents-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .documents-table tr:hover {
+            background: #f8faff;
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            background: #e9ecef;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4361ee;
+            font-size: 18px;
+        }
+
+        .document-details h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .document-details p {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .download-btn {
+            color: #4361ee;
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .download-btn:hover {
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        .delete-btn {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+        }
+
+        .no-documents {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .no-documents i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        /* Уведомления */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+            border-left: 5px solid #4361ee;
+        }
+
+        .toast.success {
+            border-left-color: #2ecc71;
+        }
+
+        .toast.error {
+            border-left-color: #ff6b6b;
+        }
+
+        .toast.warning {
+            border-left-color: #ffa726;
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toast-content i {
+            font-size: 24px;
+        }
+
+        .toast.success .toast-content i {
+            color: #2ecc71;
+        }
+
+        .toast.error .toast-content i {
+            color: #ff6b6b;
+        }
+
+        .toast.warning .toast-content i {
+            color: #ffa726;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .modal-body p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .upload-section {
+                padding: 20px;
+            }
+
+            .documents-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .documents-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .document-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .document-actions {
+                justify-content: flex-start;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Хедер -->
+        <div class="header">
+            <h1><i class="fas fa-file-upload"></i> Управление документами</h1>
+            <div class="admin-controls">
+                <div class="admin-info">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Администратор</span>
+                </div>
+                <button class="logout-btn" onclick="adminLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Выйти</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Контент -->
+        <div class="content">
+            <!-- Секция загрузки -->
+            <h2 class="section-title"><i class="fas fa-cloud-upload-alt"></i> Загрузка новых файлов</h2>
+            <div class="upload-section">
+                <form id="uploadForm" class="upload-form">
+                    <!-- Выбор файлов -->
+                    <div class="form-group">
+                        <label><i class="fas fa-folder-plus"></i> Выберите файлы для загрузки</label>
+                        <div class="file-input-container">
+                            <input type="file" id="multipleFiles" class="file-input" multiple
+                                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.txt,.zip,.rar">
+                            <label for="multipleFiles" class="file-input-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Перетащите файлы сюда или нажмите для выбора</span>
+                                <small>Поддерживаются: PDF, Word, Excel, PowerPoint, изображения, архивы</small>
+                                <small>Максимальный размер файла: 5 GB</small>
+                            </label>
+                        </div>
+                        <div id="fileList" class="file-list"></div>
+                    </div>
+
+                    <!-- Прогресс бар -->
+                    <div id="progressContainer" class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span id="progressPercent">0%</span>
+                            <span id="progressText">Подготовка к загрузке...</span>
+                        </div>
+                    </div>
+
+                    <!-- Кнопка загрузки -->
+                    <button type="submit" class="btn">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span id="uploadButtonText">Загрузить файлы</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Секция управления документами -->
+            <div class="documents-section">
+                <h2 class="section-title"><i class="fas fa-file-alt"></i> Загруженные документы</h2>
+                
+                <div class="documents-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Поиск по названию документа..." oninput="filterDocuments()">
+                    </div>
+                    <button class="refresh-btn" onclick="loadDocuments()">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Обновить</span>
+                    </button>
+                </div>
+
+                <div id="documentsTableContainer">
+                    <table class="documents-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Документ</th>
+                                <th style="width: 20%;">Тип</th>
+                                <th style="width: 15%;">Размер</th>
+                                <th style="width: 15%;">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="documentsTableBody">
+                            <!-- Документы будут загружены здесь -->
+                            <tr>
+                                <td colspan="4" class="no-documents">
+                                    <i class="fas fa-folder-open"></i>
+                                    <p>Загрузите первый документ</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Подтверждение удаления</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить документ "<span id="documentNameToDelete"></span>"?</p>
+                <p style="color: #ff6b6b; margin-top: 10px;"><i class="fas fa-exclamation-circle"></i> Это действие нельзя отменить.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary btn-small" onclick="closeModal()">Отмена</button>
+                <button class="btn btn-danger btn-small" onclick="confirmDelete()">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // Конфигурация
+        const API_BASE_URL = 'https://scadaint.ru/api';
+        const TOKEN_KEY = 'adminAuthToken';
+        let adminToken = localStorage.getItem(TOKEN_KEY);
+        let multipleFiles = [];
+        let allDocuments = [];
+        let documentToDelete = null;
+
+        // Проверка авторизации при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!adminToken) {
+                window.location.href = 'admin-login.html';
+            } else {
+                loadDocuments();
+            }
+        });
+
+        // Выход из системы
+        function adminLogout() {
+            localStorage.removeItem(TOKEN_KEY);
+            window.location.href = 'admin-login.html';
+        }
+
+        // ============ ФУНКЦИИ ДЛЯ ЗАГРУЗКИ ФАЙЛОВ ============
+
+        // Обработка выбора файлов
+        document.getElementById('multipleFiles').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            const fileList = document.getElementById('fileList');
+
+            multipleFiles = files.slice(0, 10); // Ограничиваем 10 файлами
+
+            if (multipleFiles.length > 0) {
+                let html = '';
+                multipleFiles.forEach((file, index) => {
+                    html += `
+                        <div class="file-item">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${formatFileSize(file.size)}</div>
+                            <button type="button" class="remove-file" onclick="removeFile(${index})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+
+                fileList.innerHTML = html;
+
+                if (files.length > 10) {
+                    showToast(`Выбрано ${files.length} файлов, загружено будет только первые 10`, 'warning');
+                }
+            } else {
+                fileList.innerHTML = '';
+            }
+        });
+
+        // Удаление файла из списка
+        function removeFile(index) {
+            multipleFiles.splice(index, 1);
+            updateFileList();
+        }
+
+        // Обновление списка файлов
+        function updateFileList() {
+            const fileList = document.getElementById('fileList');
+
+            if (multipleFiles.length > 0) {
+                let html = '';
+                multipleFiles.forEach((file, index) => {
+                    html += `
+                        <div class="file-item">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${formatFileSize(file.size)}</div>
+                            <button type="button" class="remove-file" onclick="removeFile(${index})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                fileList.innerHTML = html;
+            } else {
+                fileList.innerHTML = '';
+                document.getElementById('multipleFiles').value = '';
+            }
+        }
+
+        // Обработка формы загрузки (для нескольких файлов с последовательной загрузкой)
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (multipleFiles.length === 0) {
+                showToast('Выберите файлы для загрузки', 'warning');
+                return;
+            }
+
+            // Показываем прогресс бар
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const progressText = document.getElementById('progressText');
+            const uploadButton = document.querySelector('#uploadForm button[type="submit"]');
+            
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressPercent.textContent = '0%';
+            progressText.textContent = 'Подготовка к загрузке...';
+            uploadButton.disabled = true;
+            uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+
+            let uploadedCount = 0;
+            let failedCount = 0;
+            const totalFiles = multipleFiles.length;
+
+            // Загружаем файлы по очереди
+            for (let i = 0; i < multipleFiles.length; i++) {
+                const file = multipleFiles[i];
+                
+                try {
+                    // Обновляем текст прогресса для текущего файла
+                    progressText.textContent = `Загрузка файла ${i + 1} из ${totalFiles}: ${file.name}`;
+                    
+                    const result = await uploadSingleFile(file);
+                    
+                    if (result.success) {
+                        uploadedCount++;
+                    } else {
+                        failedCount++;
+                        console.error(`Ошибка загрузки ${file.name}:`, result.message);
+                    }
+                } catch (error) {
+                    failedCount++;
+                    console.error(`Ошибка сети для ${file.name}:`, error);
+                }
+
+                // Обновляем общий прогресс
+                const percent = Math.round(((i + 1) / totalFiles) * 100);
+                progressFill.style.width = `${percent}%`;
+                progressPercent.textContent = `${percent}%`;
+            }
+
+            // Завершение
+            let message = '';
+            let type = 'info';
+            
+            if (uploadedCount === totalFiles) {
+                message = `Все ${uploadedCount} файлов успешно загружены`;
+                type = 'success';
+            } else if (uploadedCount > 0) {
+                message = `Загружено ${uploadedCount} из ${totalFiles} файлов. Ошибок: ${failedCount}`;
+                type = failedCount > 0 ? 'warning' : 'success';
+            } else {
+                message = `Не удалось загрузить файлы. Проверьте соединение и права доступа`;
+                type = 'error';
+            }
+            
+            showToast(message, type);
+            
+            // Очищаем форму если все успешно или частично
+            if (uploadedCount > 0) {
+                document.getElementById('uploadForm').reset();
+                document.getElementById('fileList').innerHTML = '';
+                multipleFiles = [];
+                
+                // Перезагружаем список документов
+                setTimeout(() => loadDocuments(), 1000);
+            }
+            
+            // Скрываем прогресс и восстанавливаем кнопку
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                uploadButton.disabled = false;
+                uploadButton.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><span>Загрузить файлы</span>';
+            }, 2000);
+        });
+
+        // Функция для загрузки одного файла
+        async function uploadSingleFile(file) {
+            const formData = new FormData();
+            
+            // Важно: имя поля должно быть 'document' (как в серверном коде)
+            formData.append('document', file);
+            
+            // Используем имя файла без расширения как заголовок
+            const title = file.name.split('.')[0];
+            formData.append('title', title);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/documents`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                        // Не добавляем Content-Type! FormData установит его автоматически с boundary
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        success: true,
+                        data: data
+                    };
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    return {
+                        success: false,
+                        message: errorData.message || `Ошибка ${response.status}: ${response.statusText}`,
+                        status: response.status
+                    };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    message: `Сетевая ошибка: ${error.message}`,
+                    error: error
+                };
+            }
+        }
+
+        // ============ ФУНКЦИИ ДЛЯ УПРАВЛЕНИЯ ДОКУМЕНТАМИ ============
+
+        // Загрузка списка документов
+        async function loadDocuments() {
+            const tableBody = document.getElementById('documentsTableBody');
+            const refreshBtn = document.querySelector('.refresh-btn');
+            
+            // Показываем индикатор загрузки
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #4361ee;"></i>
+                        <p style="margin-top: 10px; color: #666;">Загрузка документов...</p>
+                    </td>
+                </tr>
+            `;
+            
+            if (refreshBtn) {
+                refreshBtn.disabled = true;
+                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Загрузка...</span>';
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/documents`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    allDocuments = data.documents || [];
+                    renderDocuments(allDocuments);
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.message || 'Ошибка загрузки документов', 'error');
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="no-documents">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <p>Ошибка загрузки документов</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                showToast('Сетевая ошибка при загрузке документов', 'error');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="no-documents">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Ошибка соединения с сервером</p>
+                        </td>
+                    </tr>
+                `;
+            } finally {
+                if (refreshBtn) {
+                    refreshBtn.disabled = false;
+                    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i><span>Обновить</span>';
+                }
+            }
+        }
+
+        // Отображение документов в таблице
+        function renderDocuments(documents) {
+            const tableBody = document.getElementById('documentsTableBody');
+            
+            if (!documents || documents.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="no-documents">
+                            <i class="fas fa-folder-open"></i>
+                            <p>Нет загруженных документов</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            documents.forEach(doc => {
+                const icon = getFileIcon(doc.file_type || 'unknown');
+                const size = formatFileSize(doc.file_size || 0);
+                const date = doc.created_at ? new Date(doc.created_at).toLocaleDateString('ru-RU') : 'Н/Д';
+                
+                html += `
+                    <tr>
+                        <td>
+                            <div class="document-info">
+                                <div class="document-icon">
+                                    <i class="${icon}"></i>
+                                </div>
+                                <div class="document-details">
+                                    <h4>${doc.title || 'Без названия'}</h4>
+                                    <p><i class="far fa-calendar"></i> ${date}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="padding: 5px 10px; background: #e9ecef; border-radius: 4px; font-size: 12px;">
+                                ${(doc.file_type || 'unknown').toUpperCase()}
+                            </span>
+                        </td>
+                        <td>${size}</td>
+                        <td>
+                            <div class="document-actions">
+                                <button class="action-btn download-btn" title="Скачать" onclick="downloadDocument(${doc.id}, '${doc.title || 'document'}')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn delete-btn" title="Удалить" onclick="openDeleteModal(${doc.id}, '${doc.title || 'Документ'}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+        }
+
+        // Фильтрация документов
+        function filterDocuments() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                renderDocuments(allDocuments);
+                return;
+            }
+            
+            const filtered = allDocuments.filter(doc => {
+                return (doc.title && doc.title.toLowerCase().includes(searchTerm)) ||
+                       (doc.file_type && doc.file_type.toLowerCase().includes(searchTerm));
+            });
+            
+            renderDocuments(filtered);
+        }
+
+        // Скачивание документа
+        async function downloadDocument(documentId, fileName) {
+            try {
+                // Открываем в новой вкладке
+                window.open(`${API_BASE_URL}/admin/documents/${documentId}/download?token=${encodeURIComponent(adminToken)}`, '_blank');
+            } catch (error) {
+                showToast('Ошибка при скачивании документа', 'error');
+                console.error('Download error:', error);
+            }
+        }
+
+        // Открытие модального окна удаления
+        function openDeleteModal(documentId, documentName) {
+            documentToDelete = documentId;
+            document.getElementById('documentNameToDelete').textContent = documentName;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        // Закрытие модального окна
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            documentToDelete = null;
+        }
+
+        // Подтверждение удаления
+        async function confirmDelete() {
+            if (!documentToDelete) return;
+            
+            const modal = document.getElementById('deleteModal');
+            const deleteBtn = modal.querySelector('.btn-danger');
+            const cancelBtn = modal.querySelector('.btn-secondary');
+            
+            deleteBtn.disabled = true;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
+            cancelBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/documents/${documentToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showToast('Документ успешно удален', 'success');
+                    
+                    // Удаляем из локального массива
+                    allDocuments = allDocuments.filter(doc => doc.id !== documentToDelete);
+                    
+                    // Обновляем таблицу
+                    renderDocuments(allDocuments);
+                    
+                    // Закрываем модальное окно
+                    closeModal();
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.message || 'Ошибка удаления документа', 'error');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showToast('Сетевая ошибка при удалении', 'error');
+            } finally {
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = 'Удалить';
+                cancelBtn.disabled = false;
+            }
+        }
+
+        // ============ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ============
+
+        // Форматирование размера файла
+        function formatFileSize(bytes) {
+            if (!bytes || bytes === 0) return '0 Б';
+            const k = 1024;
+            const sizes = ['Б', 'КБ', 'МБ', 'ГБ', 'ТБ'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Получение иконки для типа файла
+        function getFileIcon(fileType) {
+            const icons = {
+                'pdf': 'fas fa-file-pdf',
+                'doc': 'fas fa-file-word',
+                'docx': 'fas fa-file-word',
+                'xls': 'fas fa-file-excel',
+                'xlsx': 'fas fa-file-excel',
+                'ppt': 'fas fa-file-powerpoint',
+                'pptx': 'fas fa-file-powerpoint',
+                'jpg': 'fas fa-file-image',
+                'jpeg': 'fas fa-file-image',
+                'png': 'fas fa-file-image',
+                'gif': 'fas fa-file-image',
+                'txt': 'fas fa-file-alt',
+                'zip': 'fas fa-file-archive',
+                'rar': 'fas fa-file-archive',
+                '7z': 'fas fa-file-archive'
+            };
+            
+            return icons[fileType.toLowerCase()] || 'fas fa-file';
+        }
+
+        // Уведомления
+        function showToast(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${getToastIcon(type)}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            // Удаляем старые уведомления
+            const toasts = container.querySelectorAll('.toast');
+            if (toasts.length > 5) {
+                toasts[0].remove();
+            }
+
+            // Автоматическое удаление
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        function getToastIcon(type) {
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            return icons[type] || 'fa-info-circle';
+        }
+
+        // Drag & Drop поддержка
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Визуальные эффекты при перетаскивании
+        const fileInputLabel = document.querySelector('.file-input-label');
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileInputLabel.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileInputLabel.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            fileInputLabel.style.borderColor = '#4361ee';
+            fileInputLabel.style.background = '#f8faff';
+        }
+
+        function unhighlight(e) {
+            fileInputLabel.style.borderColor = '#dee2e6';
+            fileInputLabel.style.background = 'white';
+        }
+
+        // Обработка drop
+        fileInputLabel.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            const input = document.getElementById('multipleFiles');
+
+            if (files.length > 0) {
+                input.files = files;
+                input.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Закрытие модального окна при клике вне его
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'deleteModal') {
+                closeModal();
+            }
+        });
+
+        // Закрытие модального окна по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('deleteModal').style.display === 'flex') {
+                    closeModal();
+                }
+                // Удаляем все тосты
+                document.querySelectorAll('.toast').forEach(toast => toast.remove());
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/index.css" />
+    <title>Видео уроки</title>
+
+  </head>
+  <body class="body">
+    <header class="header header__block">
+      <div class="header__logo-block">
+        <picture>
+          <source srcset="./media/logo-mobile.svg" media="(max-width: 440px)" />
+          <img
+            class="header__logo"
+            width="41"
+            height="41"
+            src="../media/logo.svg"
+            alt="Логотип"
+          />
+        </picture>
+        <h2 class="header__title">ИНТ</h2>
+      </div>
+      <div class="header__container">
+        <div class="header__container-items">
+        </div>
+
+      </div>
+      <div class="header__auth-links">
+        <picture>
+          <a href="../auth.html">
+            <svg
+              class="header__avatar"
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M14.0001 7.75C15.9723 7.75 17.5716 9.34929 17.5716 11.3214C17.5716 13.2936 15.9723 14.8929 14.0001 14.8929C12.028 14.8929 10.4287 13.2936 10.4287 11.3214C10.4287 9.34929 12.028 7.75 14.0001 7.75ZM14.0001 9.25C15.1444 9.25 16.0716 10.1771 16.0716 11.3214C16.0716 12.4657 15.1444 13.3929 14.0001 13.3929C12.8559 13.3929 11.9287 12.4657 11.9287 11.3214C11.9287 10.1771 12.8559 9.25 14.0001 9.25Z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M14 16.3929C18.8321 16.3929 22.75 19.895 22.75 24.2143L22.7493 24.25H20.6757C20.5721 21.3579 17.3414 18.4643 14.1071 18.4643C10.8736 18.4643 7.71929 21.3586 7.61571 24.25H5.25071L5.25 24.2143C5.25 19.895 9.16786 16.3929 14 16.3929Z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M14 26C20.6274 26 26 20.6274 26 14C26 7.37258 20.6274 2 14 2C7.37258 2 2 7.37258 2 14C2 20.6274 7.37258 26 14 26ZM14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 21.732 6.26801 28 14 28Z"
+              />
+            </svg>
+          </a>
+        </picture>
+        <a class="header__auth-link" href="../auth.html">Выход</a>
+      </div>
+    </header>
+    <div class="mob__menu">
+      <input class="side-menu" type="checkbox" id="side-menu" />
+      <label class="hamb" for="side-menu">
+        <span class="hamb-line"></span>
+        <div class="header__auth-link-mobile">
+          <picture>
+            <img
+              class="header__avatar"
+              src="./media/auth_avatar.svg"
+              alt="Аватарка"
+            />
+          </picture>
+          <a class="header__auth-link" href="../auth.html">Выход</a>
+        </div>
+      </label>
+
+      <nav class="nav">
+        <ul class="menu">
+          <div class="menu__block menu__block-product">
+            <p class="menu__item">Продукты</p>
+            <svg
+              class="svg"
+              width="13"
+              height="22"
+              viewBox="0 0 13 22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 2L10 11L2 20"
+                stroke="white"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <div class="product__mobile-list mobile-list">
+            <div class="select__ll">
+              <div class="ll">
+                <a href="../iserver.html">
+                  <p class="ll-text">IntegrityServer</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../reports.html">
+                  <p class="ll-text">IntegrityReports</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../datatransport.html">
+                  <p class="ll-text">IntegrityDataTransport</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../historyserver.html">
+                  <p class="ll-text">IntegrityHistoryServer</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../hmi.html">
+                  <p class="ll-text">IntegrityHMI</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../trends.html">
+                  <p class="ll-text">IntegrityTrends</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../alarms.html">
+                  <p class="ll-text">IntegrityAlarms</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../webhmi.html">
+                  <p class="ll-text">IntegrityWebHMI</p>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="menu__block menu__block-supports">
+            <p class="menu__item">Поддержка</p>
+            <svg
+              class="svg-support"
+              width="13"
+              height="22"
+              viewBox="0 0 13 22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 2L10 11L2 20"
+                stroke="white"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <div class="supports__mobile-list mobile-list">
+            <div class="select__ll">
+              <div class="ll">
+                <a href="../supports.html">
+                  <p class="ll-text">Техническая поддержка</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../integrator.html">
+                  <p class="ll-text">Интеграторам</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../documentation.html">
+                  <p class="ll-text">Запрос документации</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../demo.html">
+                  <p class="ll-text">Запрос пробной версии</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../price.html">
+                  <p class="ll-text">Запрос ценового предложения</p>
+                </a>
+              </div>
+              <div class="ll">
+                <a href="../education.html">
+                  <p class="ll-text">Запрос на обучение</p>
+                </a>
+              </div>
+            </div>
+          </div>
+          <li><a href="../contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="container">
+      <div class="content">
+        <div class="list__products left__block">
+            <a href="./lk.html"><button class="btn__list__products">Личные данные</button></a>
+            <a href="./history.html"><button class="mt-20 btn__list__products">История заявок</button></a>
+            <a href="./documents.html"><button class="mt-20 btn__list__products">Документация</button></a>
+            <a href="./video.html"><button class="mt-20 btn__list__products-active">Видеоуроки</button></a>
+
+        </div>
+        <div class="text__products right__block">
+          <div class="select-requests">
+            <h2
+              class="title__blue-fz30 select-title"
+              style="margin-right: 150px"
+            >
+              Видеоуроки
+            </h2>
+
+          </div>
+          <div class="email-blocks">
+            <div class="video-block" data-is-open="false">
+              <div class="video-block-top">
+                <img
+                  class="email-img-type"
+                  width="40"
+                  src="../media/play.svg"
+                  alt="icon"
+                />
+                <p class="email-type">Урок №1</p>
+                <button class="btn-video-open">+</button>
+              </div>
+              <div class="video-block-bottom" style="display: none">
+                <p class="email-type video-watch-desc">
+			Видеоурок
+                </p>
+                <button class="btn-watch" data-video-path="./media/Video/Урок 1. Презентация. - 02.02.2021 - сжат.mp4">Смотреть</button>
+              </div>
+              <div class="video-popup">
+                <video class="video" controls>
+                  <source src="" type="video/mp4" />
+                </video>
+                <button class="video-close">X</button>
+              </div>
+            </div>
+            <div class="video-block" data-is-open="false">
+              <div class="video-block-top">
+                <img
+                  class="email-img-type"
+                  width="40"
+                  src="../media/play.svg"
+                  alt="icon"
+                />
+                <p class="email-type">Урок №2</p>
+                <button class="btn-video-open">+</button>
+              </div>
+              <div class="video-block-bottom" style="display: none">
+                <p class="email-type video-watch-desc">
+			Видеоурок
+                </p>
+                <button class="btn-watch" data-video-path="./media/Video/Урок 2. Установка компонент - сжат.mp4">Смотреть</button>
+              </div>
+              <div class="video-popup">
+                <video class="video" controls>
+                  <source src="" type="video/mp4" />
+                </video>
+                <button class="video-close">X</button>
+              </div>
+            </div>
+            <div class="video-block" data-is-open="false">
+              <div class="video-block-top">
+                <img
+                  class="email-img-type"
+                  width="40"
+                  src="../media/play.svg"
+                  alt="icon"
+                />
+                <p class="email-type">Урок №3</p>
+                <button class="btn-video-open">+</button>
+              </div>
+              <div class="video-block-bottom" style="display: none">
+                <p class="email-type video-watch-desc"> 
+			Видеоурок
+                </p>
+                <button class="btn-watch" data-video-path="./media/Video/Урок 3. Создание объектов в сервере и привязка к контроллеру.mp4">Смотреть</button>
+              </div>
+              <div class="video-popup">
+                <video class="video" controls>
+                  <source src="" type="video/mp4" />
+                </video>
+                <button class="video-close">X</button>
+              </div>
+            </div>
+            <div class="video-block" data-is-open="false">
+              <div class="video-block-top">
+                <img
+                  class="email-img-type"
+                  width="40"
+                  src="../media/play.svg"
+                  alt="icon"
+                />
+                <p class="email-type">Урок №4</p>
+                <button class="btn-video-open">+</button>
+              </div>
+              <div class="video-block-bottom" style="display: none">
+                <p class="email-type video-watch-desc">
+			Видеоурок
+                </p>
+                <button class="btn-watch" data-video-path="./media/Video/Урок 4. Создание проекта визуализации.mp4">Смотреть</button>
+              </div>
+              <div class="video-popup">
+                <video class="video" controls>
+                  <source src="" type="video/mp4" />
+                </video>
+                <button class="video-close">X</button>
+              </div>
+            </div>
+            <div class="video-block" data-is-open="false">
+              <div class="video-block-top">
+                <img
+                  class="email-img-type"
+                  width="40"
+                  src="../media/play.svg"
+                  alt="icon"
+                />
+                <p class="email-type">Урок №6</p>
+                <button class="btn-video-open">+</button>
+              </div>
+              <div class="video-block-bottom" style="display: none">
+                <p class="email-type video-watch-desc">
+			Видеоурок
+                </p>
+                <button class="btn-watch" data-video-path="./media/Video/Урок 6. Настройка истории и работа с системой отображения графиков.mp4">Смотреть</button>
+              </div>
+              <div class="video-popup">
+                <video class="video" controls>
+                  <source src="" type="video/mp4" />
+                </video>
+                <button class="video-close">X</button>
+              </div>
+            </div>
+            <div class="video-block" data-is-open="false">
+              <div class="video-block-top">
+                <img
+                  class="email-img-type"
+                  width="40"
+                  src="../media/play.svg"
+                  alt="icon"
+                />
+                <p class="email-type">Урок №8</p>
+                <button class="btn-video-open">+</button>
+              </div>
+              <div class="video-block-bottom" style="display: none">
+                <p class="email-type video-watch-desc">
+			Видеоурок
+                </p>
+                <button class="btn-watch" data-video-path="./media/Video/Урок 8. Резервирование. теперь точно готово-сжат.mp4">Смотреть</button>
+              </div>
+              <div class="video-popup">
+                <video class="video" controls>
+                  <source src="" type="video/mp4" />
+                </video>
+                <button class="video-close">X</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__blocks">
+          <div class="footer__block">
+            <h1 class="footer__title">Головной офис</h1>
+            <p class="footer__item footer__email-icon mt-30">int@scadaint.ru</p>
+            <p class="footer__item footer__mobile-icon">+7 (3822) 601-000</p>
+          </div>
+          <div class="footer__block">
+            <h1 class="footer__title">Техническая поддержка</h1>
+            <p class="footer__item footer__email-icon mt-30">
+              support@scadaint.ru
+            </p>
+            <p class="footer__item footer__mobile-icon">+7 (3822) 601-000</p>
+          </div>
+          <div class="footer__block">
+            <h1 class="footer__title">Коммерческий отдел</h1>
+            <p class="footer__item footer__email-icon mt-30">
+              commerce@scadaint.ru
+            </p>
+            <p class="footer__item footer__mobile-icon">+7 (3822) 601-000</p>
+          </div>
+        </div>
+      </div>
+      <hr class="footer__hr mt-50" />
+      <h4 class="footer__copyright">(с) 2022 Все права защищены</h4>
+    </footer><script>
+   /*const openDescriptionElems = document.querySelectorAll(".btn-video-open");
+      const bottomElems = document.querySelectorAll(".video-block-bottom");
+      const topElem = document.querySelectorAll(".video-block-top");
+      const videoBlocks = document.querySelectorAll(".video-block");
+
+      const videoBlock = document.querySelector(".video-popup");
+      const btnVideoClose = document.querySelector(".video-close");
+      const watchButtons = document.querySelectorAll(".btn-watch");
+
+      watchButtons.forEach((btn, index) => {
+        btn.addEventListener("click", () => {
+          console.log(videoBlock);
+          videoBlock.style.display = "flex";
+          bottomElems.style.display = "flex";
+        });
+      });
+      openDescriptionElems.forEach((o, index) => {
+        o.addEventListener("click", () => {
+          const videoBlock = videoBlocks[index];
+          const isOpen = videoBlock.dataset.isOpen === "true";
+
+          if (isOpen) {
+            videoBlock.dataset.isOpen = "false";
+            bottomElems[index].style.display = "none";
+            o.innerText = "+";
+          } else {
+            videoBlock.dataset.isOpen = "true";
+            bottomElems[index].style.display = "flex";
+            o.innerText = "-";
+          }
+
+          videoBlock.style.display = "flex";
+          videoBlock.style.flexDirection = 'column';
+        });
+      });
+      btnVideoClose.addEventListener("click", () => {
+        videoBlock.style.display = "none";
+      });*/
+
+const openDescriptionElems = document.querySelectorAll(".btn-video-open");
+const bottomElems = document.querySelectorAll(".video-block-bottom");
+const topElem = document.querySelectorAll(".video-block-top");
+const videoBlocks = document.querySelectorAll(".video-block");
+
+const videoPopup = document.querySelector(".video-popup");
+const videoElement = document.querySelector(".video-popup video"); // получаем видео элемент
+const btnVideoClose = document.querySelector(".video-close");
+const watchButtons = document.querySelectorAll(".btn-watch");
+
+watchButtons.forEach((btn, index) => {
+    btn.addEventListener("click", () => {
+        // Получаем путь к видео из data-атрибута кнопки
+        const videoPath = btn.getAttribute('data-video-path');
+        if (videoPath) {
+            videoElement.src = videoPath; // устанавливаем новый источник
+            videoElement.load(); // перезагружаем видео
+        }
+        
+        videoPopup.style.display = "flex";
+        bottomElems[index].style.display = "flex";
+    });
+});
+
+openDescriptionElems.forEach((o, index) => {
+    o.addEventListener("click", () => {
+        const videoBlock = videoBlocks[index];
+        const isOpen = videoBlock.dataset.isOpen === "true";
+
+        if (isOpen) {
+            videoBlock.dataset.isOpen = "false";
+            bottomElems[index].style.display = "none";
+            o.innerText = "+";
+        } else {
+            videoBlock.dataset.isOpen = "true";
+            bottomElems[index].style.display = "flex";
+            bottomElems[index].style.justifyContent = "space-between";
+            bottomElems[index].style.alignItems = "space-between";
+            o.innerText = "-";
+        }
+
+        videoBlock.style.display = "flex";
+        videoBlock.style.flexDirection = 'column';
+    });
+});
+
+btnVideoClose.addEventListener("click", () => {
+    videoPopup.style.display = "none";
+    videoElement.pause(); // останавливаем видео при закрытии
+});
+
+   document.addEventListener('DOMContentLoaded', function (e) {
+    e.preventDefault()
+    const API_URL = 'https://scadaint.ru/api'; // Базовый URL API
+    // const TOKEN_KEY = 'token'; // --- УДАЛЕНО --- // Больше не используется
+    const videoGrid = document.getElementById('videoGrid');
+    const statusDiv = document.getElementById('status');
+
+    // --- Функция getUserToken УДАЛЕНА ---
+    // function getUserToken() { return localStorage.getItem(TOKEN_KEY); }
+
+    // --- Функция для загрузки списка видео ---
+    async function loadVideos() {
+        // Очищаем сетку и показываем статус загрузки
+        if (videoGrid) videoGrid.innerHTML = '';
+        if (statusDiv) statusDiv.innerHTML = `<p class="loading">Загрузка видео...</p>`;
+
+        // --- УДАЛЕНО: const token = getUserToken(); ---
+        // --- УДАЛЕНО: Проверка if (!token) {...} ---
+
+        try {
+            // --- ВАЖНО: Добавляем credentials: 'include' ---
+            const response = await fetch(`${API_URL}/videos`, {
+                method: 'GET',
+                // headers: { 'Authorization': `Bearer ${token}` } // --- УДАЛЕНО ---
+                credentials: 'include' // Включаем куки (в том числе accessToken) в запрос
+            });
+
+            // Проверяем статус ответа
+            if (response.status === 401) {
+                // Неавторизован
+                statusDiv.innerHTML = `<p class="error">Сессия истекла или доступ запрещен. Пожалуйста, <a href="./auth.html">войдите снова</a>.</p>`; // Или '../auth.html'
+                // Опционально: попытка глобальной проверки авторизации или редирект
+                // checkAuthAndRedirect();
+                return;
+            }
+
+            if (!response.ok) {
+                // Другая ошибка (403, 404, 500 и т.д.)
+                // Пытаемся получить сообщение об ошибке от сервера
+                let errorMessage = `Ошибка ${response.status}: Не удалось загрузить данные.`;
+                try {
+                    const errorData = await response.json();
+                    if (errorData.message) {
+                        errorMessage = `Ошибка ${response.status}: ${errorData.message}`;
+                    }
+                } catch (e) {
+                    // Игнорируем ошибку парсинга JSON, если тело ответа не JSON
+                }
+                throw new Error(errorMessage);
+            }
+
+            const data = await response.json();
+
+            // Проверяем структуру ответа
+            if (!data || !Array.isArray(data.videos) || data.videos.length === 0) {
+                statusDiv.innerHTML = `<p>Видео не найдены.</p>`;
+                return;
+            }
+
+            // Очищаем статус
+            if (statusDiv) statusDiv.innerHTML = '';
+
+            // Заполняем сетку видео
+            data.videos.forEach(video => {
+                if (!videoGrid) return; // На всякий случай проверяем
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+
+                // Обработка возможных отсутствующих полей и экранирование
+                const title = escapeHtml(video.title || 'Без названия');
+                const description = escapeHtml(video.description || '');
+                // Предполагается, что file_path и thumbnail_path приходят относительными путями
+                // от корня сервера или папки uploads. Убедитесь, что путь корректный.
+                // Если сервер отдает путь как `uploads/videos/...`, то `/server/` может быть лишним.
+                // Лучше уточнить у бэкенда или проверить в ответе.
+                // Например, если video.file_path = "uploads/videos/vid123.mp4"
+                // то src должен быть "/uploads/videos/vid123.mp4" или "http://localhost:3001/uploads/videos/vid123.mp4"
+                // Для простоты предположим, что путь относительный и сервер настроен правильно.
+                const videoSrc = video.file_path ? `/server/${video.file_path}` : ''; // Или абсолютный URL от API_URL
+                const posterSrc = video.thumbnail_path ? `/${video.thumbnail_path}` : '';
+
+                // Создаем элементы, чтобы избежать innerHTML с внешними данными (доп. безопасность)
+                const videoElement = document.createElement('video');
+                videoElement.controls = true;
+                videoElement.preload = "metadata";
+                videoElement.width = 400;
+                if (posterSrc) {
+                    videoElement.poster = posterSrc;
+                }
+
+                const sourceElement = document.createElement('source');
+                sourceElement.src = videoSrc;
+                // Уточните MIME-тип, если сервер его предоставляет или если известен заранее
+                // Например, если file_path заканчивается на .mp4
+                if (videoSrc && videoSrc.toLowerCase().endsWith('.mp4')) {
+                    sourceElement.type = 'video/mp4';
+                } else if (videoSrc && videoSrc.toLowerCase().endsWith('.webm')) {
+                    sourceElement.type = 'video/webm';
+                }
+                // Добавьте другие типы при необходимости
+                videoElement.appendChild(sourceElement);
+
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'info';
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'title';
+                titleDiv.textContent = title; // textContent безопасен
+
+                const descP = document.createElement('p');
+                descP.className = 'description';
+                descP.textContent = description; // textContent безопасен
+
+                infoDiv.appendChild(titleDiv);
+                infoDiv.appendChild(descP);
+
+                card.appendChild(videoElement);
+                card.appendChild(infoDiv);
+
+                videoGrid.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error('Load videos error:', error);
+            // Проверяем, является ли ошибка сетевой
+            if (error instanceof TypeError && error.message.includes('fetch')) {
+                statusDiv.innerHTML = `<p class="error">Ошибка сети. Проверьте подключение.</p>`;
+            } else {
+                statusDiv.innerHTML = `<p class="error">${error.message}</p>`;
+            }
+        }
+    }
+
+    // --- Вспомогательная функция для экранирования HTML (предотвращает XSS) ---
+    // Хотя мы используем textContent, это дополнительная мера предосторожности
+    function escapeHtml(text) {
+        if (typeof text !== 'string') return '';
+        const map = {
+            '&': '&amp;',
+            '<': '<',
+            '>': '>',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function (m) { return map[m]; });
+    }
+
+    // --- Инициализация: загружаем видео при загрузке страницы ---
+    loadVideos();
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <!-- Подключение ExcelJS -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js "></script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Опросный лист</title>
+    <link rel="stylesheet" href="./styles/index.css" />
+  </head>
+  <body class="body">
+    <header class="header header__block">
+      <div class="header__logo-block">
+        <a href="./index.html"
+          ><picture>
+            <source
+              srcset="./media/logo-mobile.svg"
+              media="(max-width: 440px)"
+            />
+            <img
+              class="header__logo"
+              width="41"
+              height="41"
+              src="./media/logo.svg"
+              alt="Логотип"
+            />
+          </picture>
+        </a>
+        <a href="./index.html"><h1 class="header__title">ИНТ</h1></a>
+      </div>
+      <div class="header__container">
+        <div class="header__container-items">
+          <p class="header__p">
+            <a class="header__link" href="./about.html">о нас</a>
+          </p>
+          <p class="header__p">
+            <a class="header__link" href="./products.html">продукты</a>
+          </p>
+          <p class="header__p">
+            <a class="header__link" href="./supports.html">поддержка</a>
+          </p>
+          <p class="header__p">
+            <a class="header__link" href="./contacts.html">контакты</a>
+          </p>
+        </div>
+        <a class="tel" href="">+7 (3822) 601-000</a>
+      </div>
+      <div class="header__auth-links">
+        <picture>
+          <img
+            class="header__avatar"
+            src="./media/auth_avatar.svg"
+            alt="Аватарка"
+          />
+        </picture>
+        <a class="header__auth-link" href="./auth.html">Вход</a>
+        <span class="header__span">|</span>
+        <a class="header__auth-link" href="./reg.html">Регистрация</a>
+      </div>
+    </header>
+    <div class="mob__menu">
+      <input class="side-menu" type="checkbox" id="side-menu" />
+      <label class="hamb" for="side-menu">
+        <span class="hamb-line"></span>
+        <div class="header__auth-link-mobile">
+          <picture>
+            <img
+              class="header__avatar"
+              src="./media/auth_avatar.svg"
+              alt="Аватарка"
+            />
+          </picture>
+          <a class="header__auth-link" href="./auth.html">Вход</a>
+          <span class="header__span">|</span>
+          <a class="header__auth-link" href="./reg.html">Регистрация</a>
+        </div>
+      </label>
+
+      <nav class="nav">
+        <ul class="menu">
+          <li><a href="./products.html">Продукты</a></li>
+          <li><a href="./supports.html">Поддержка</a></li>
+          <li><a href="./contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="container">
+      <section class="section mt-84">
+        <form
+          class="form__questionnaireOne"
+          method="POST"
+          enctype="multipart/form-data"
+          id="formOne"
+        >
+          <h1 class="form__questionnaire-title">ОПРОСНЫЙ ЛИСТ</h1>
+          <h2 class="form__questionnaire-subtitle">
+            на программное обеспечение Integrity SCADA
+          </h2>
+          <div class="form__questionnaire-scale"></div>
+          <div class="form__questionnaire-block">
+            <h3 class="form__input-name">
+              ФАМИЛИЯ ИМЯ ОТЧЕСТВО <span class="star">*</span>
+            </h3>
+            <input
+              name="Фамилия_Имя_Отчество"
+              class="form__input-big required"
+              type="text"
+            />
+            <div class="form__inputs-block">
+              <div class="form__inputs-left">
+                <h3 class="form__input-name">
+                  ОРГАНИЗАЦИЯ <span class="star">*</span>
+                </h3>
+                <input
+                  name="Организация"
+                  class="form__input-small required"
+                  type="text"
+                />
+                <div class="form__middle-input">
+                  <!-- Область -->
+                  <div class="form-group" style="position: relative">
+                    <h3 class="form__input-name mt-30">
+                      ОБЛАСТЬ <span class="star">*</span>
+                    </h3>
+                    <input name="Область" type="hidden" id="oblast-value" />
+
+                    <input
+                      type="text"
+                      id="oblast-input"
+                      name="Область"
+                      class="form__input-small required"
+                      placeholder="Область"
+                      autocomplete="off"
+                    />
+                    <div id="oblast-suggestions" class="suggestions-list"></div>
+                  </div>
+                </div>
+
+                <h3 class="form__input-name mt-30">
+                  ЭЛЕКТРОННАЯ ПОЧТА <span class="star">*</span>
+                </h3>
+                <input
+                  name="Почта"
+                  class="form__input-small required"
+                  type="email"
+                  placeholder="email@email.xx"
+                />
+              </div>
+              <div class="form__inputs-right">
+                <h3 class="form__input-name">
+                  ТЕЛЕФОН <span class="star">*</span>
+                </h3>
+                <input
+                  name="Телефон"
+                  class="form__input-small required"
+                  type="tel"
+                  placeholder="80001112223"
+                />
+                <div class="form__middle-input">
+                  <h3 class="form__input-name mt-30">
+                    ГОРОД <span class="star">*</span>
+                  </h3>
+                  <!-- Город -->
+                  <div class="form-group" style="position: relative">
+                    <input
+                      type="text"
+                      id="city-input"
+                      class="form__input-small required disabled"
+                      placeholder="Город"
+                      name="Город"
+                      autocomplete="off"
+                      disabled
+                    />
+                    <input type="hidden" id="city-value" name="Город" />
+                    <div id="city-suggestions" class="suggestions-list"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="delimiter"></div>
+            <h3 class="form__input-name">
+              КОНЕЧНЫЙ ЗАКАЗЧИК <span class="star">*</span>
+            </h3>
+            <p class="form__text">
+              Указать для какой организации закупается программное обеспечение.
+              Если закупается «для себя», то указать те же данные что и в поле
+              «Организация»
+            </p>
+            <input
+              name="Конечный_заказчик"
+              class="form__input-big required"
+              type="text"
+            />
+            <div class="form__inputs-block">
+              <div class="form__inputs-right">
+                <h3 class="form__input-name">
+                  ОБЪЕКТ <span class="star">*</span>
+                </h3>
+                <input
+                  name="Объект"
+                  class="form__input-big required"
+                  type="text"
+                />
+              </div>
+            </div>
+            <!--  -->
+            <div class="form__system__choose">
+              <h2 class="form__questionnaire-title">
+                Выберите архитектуру системы
+              </h2>
+              <div class="form__systems__check">
+                <div class="system local" id="openQuestionnaire1">
+                  <img
+                    class="system__choose__img"
+                    src="media/local.png"
+                    alt="localsystem"
+                    srcset=""
+                  />
+                  <div class="local__text__block">
+                    <h3 class="system__choose local__title">
+                      Локальная система управления
+                    </h3>
+                    <span class="system__text local__text">
+                      Независимые АРМ с функциями сбора и хранения архивных
+                      данных. ЛСУ, панели, отдельностоящие АРМ
+                    </span>
+                  </div>
+                </div>
+                <div class="system client__server" id="openQuestionnaire2">
+                  <img
+                    class="system__choose__img"
+                    src="media/clientserver.png"
+                    alt="localsystem"
+                    srcset=""
+                  />
+                  <div class="local__text__block">
+                    <h3 class="system__choose local__title">
+                      Клиент-серверная система
+                    </h3>
+                    <span class="system__text local__text">
+                      Выделенные сервера, к которым подключаются АРМ. Системы
+                      АСУ ТП, АСДУ с одним пунктом управления
+                    </span>
+                  </div>
+                </div>
+                <div class="system raspr" id="openQuestionnaire3">
+                  <img
+                    class="system__choose__img"
+                    src="media/raspr.png"
+                    alt="localsystem"
+                    srcset=""
+                  />
+                  <div class="local__text__block">
+                    <h3 class="system__choose local__title">
+                      Распределенные системы
+                    </h3>
+                    <span class="system__text local__text">
+                      Системы состоящие из нескольких узлов сбора и обработки
+                      данных. Системы АСУ ТП с распределенными объектами, АСДУ,
+                      многоуровневые системы
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+      <section class="section mt-84" id="questionnaire1" style="display: none">
+        <form
+          class="form__questionnaireTwo disp"
+          enctype="multipart/form-data"
+          id="formTwo"
+        >
+          <h2 class="form__questionnaire-title">
+            Локальная система управления
+          </h2>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Сервер ввода-вывода,количество сигналов
+              <p class="form__input-name-inside">
+                Сбор данных по технологическим протоколам, математическая
+                предобработка данных, генерация сообщений о событиях и авариях,
+                предоставление данных сторонним системам и клиентским
+                приложениям. В базовую поставку входят модули работы по OPC UA,
+                модуль событий и модуль вычислений.
+              </p>
+            </label>
+            <div style="display: flex; flex-direction: column">
+              <input
+                type="text"
+                list="dataSignalOptions"
+                class="form__input-small dataSignal"
+                id="dataSignal"
+                name="Сбор данных по технологическим протоколам, математическая предобработка данных"
+                placeholder="Введите число или 'Нет'"
+              />
+
+              <datalist id="dataSignalOptions">
+                <option value="Нет"></option>
+                <option value="1000">1 000</option>
+                <option value="2000">2 000</option>
+                <option value="3000">3 000</option>
+                <option value="5000">5 000</option>
+                <option value="10000">10 000</option>
+                <option value="15000">15 000</option>
+                <option value="20000">20 000</option>
+                <option value="25000">25 000</option>
+                <option value="30000">30 000</option>
+                <option value="40000">40 000</option>
+                <option value="50000">50 000</option>
+                <option value="75000">75 000</option>
+                <option value="100000">100 000</option>
+                <option value="150000">150 000</option>
+                <option value="250000">250 000</option>
+                <option value="500000">500 000</option>
+                <option value="1000000">1 000 000</option>
+                <option value="2000000">2 000 000</option>
+              </datalist>
+            </div>
+          </div>
+
+          <div class="dopDrivers" id="dopDrivers" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name"
+                >Нужны дополнительные драйверы для опроса устройств:<label
+                  class="star"
+                  >*</label
+                ></label
+              >
+              <select
+                class="form__input-small"
+                id="additionalDrivers"
+                name="Нужны дополнительные драйверы для опроса устройств"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="additional-drivers-block" style="display: none">
+            <!-- Блок с дополнительными драйверами -->
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль ГОСТ Р МЭК 104 мастер:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="moduleGOST104Master"
+                name="Модуль ГОСТ Р МЭК 104 мастер:"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль ГОСТ Р МЭК 104 слейв:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="moduleGOST104Slave"
+                name="Модуль ГОСТ Р МЭК 104 слейв"
+              />
+            </div>
+            <!-- Остальные поля -->
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль Modbus TCP/IP мастер</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusTCP/IP"
+                name="Модуль Modbus TCP/IP мастер/IP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль Modbus RTU</label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusRTU"
+                name="Модуль Modbus RTU"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль SNMP </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SNMP"
+                name="Модуль SNMP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль IEC 61850 MMS
+              </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="IEC61850MMS"
+                name="Модуль IEC 61850 MMS"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль диагностки связи ICMP</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ICMP"
+                name="Модуль диагностки связи ICMP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль статистики</label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModuleStatistics"
+                name="Модуль статистики"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данными со сторонними SQL базами.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SQLTransfer"
+                name="Шлюз обмена данными со сторонними SQL базами."
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Modbus TCP режим Slave</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusTCPSlave"
+                name="Modbus TCP режим Slave"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данными по протоколу MQTT</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="MQTT"
+                name="Шлюз обмена данными по протоколу MQTT"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз предоставления данных опроса контроллера Siemens по
+                протоколу S7</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SiemensS7"
+                name="Шлюз предоставления данных опроса контроллера Siemens по протоколу S7"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данных с контроллерами по протоколу
+                EtherNet/IP</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="EtherNet/IP"
+                name="Шлюз обмена данных с контроллерами по протоколу EtherNet/IP"
+              />
+            </div>
+          </div>
+
+          <!-- server part -->
+          <div class="form__question">
+            <label class="form__input-name"
+              >Сохранение данных в историю, количество сигналов:</label
+            >
+
+            <input
+              type="text"
+              list="signalCountHistoryList"
+              class="form__input-small"
+              id="signalCountHistory"
+              name="Сохранение данных в историю, количество сигналов:"
+              placeholder="Введите число или 'Нет'"
+            />
+
+            <!-- Подсказки -->
+            <datalist id="signalCountHistoryList">
+              <option value="Нет"></option>
+              <option value="1000">1 000</option>
+              <option value="2000">2 000</option>
+              <option value="3000">3 000</option>
+              <option value="5000">5 000</option>
+              <option value="10000">10 000</option>
+              <option value="15000">15 000</option>
+              <option value="20000">20 000</option>
+              <option value="25000">25 000</option>
+              <option value="30000">30 000</option>
+              <option value="40000">40 000</option>
+              <option value="50000">50 000</option>
+              <option value="75000">75 000</option>
+              <option value="100000">100 000</option>
+              <option value="150000">150 000</option>
+              <option value="250000">250 000</option>
+              <option value="500000">500 000</option>
+              <option value="1000000">1 000 000</option>
+              <option value="2000000">2 000 000</option>
+            </datalist>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Визуализация технологического процесса, толстый клиент<label
+                class="star"
+                >*</label
+              ></label
+            >
+            <select
+              class="form__input-small"
+              id="FatClient"
+              name="Визуализация технологического процесса, толстый клиент"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+
+          <div class="VisualizationBlock" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Отображение оперативных и исторических событий в табличной
+                форме</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="TableForm"
+                name="Отображение оперативных и исторических событий в табличной форме"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Отображение в виде графиков изменений технологических
+                параметров.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="GraphicsVis"
+                name="Отображение в виде графиков изменений технологических параметров"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Формирование отчетов.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="Reports"
+                name="Формирование отчетов"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >График зависимости одной величины от другой</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ValuesGraphic"
+                name="График зависимости одной величины от другой"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Просмотр видео с различных устройств</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="VideoPlayer"
+                name="Просмотр видео с различных устройств"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Формирование критических архивов значений и событий</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="CritArchive"
+                name="Формирование критических архивов значений и событий"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Уведомление пользователя о аварийных событиях посредством
+                telegram:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="telegramNotification"
+                name="Уведомление пользователя о аварийных событиях посредством telegram"
+              />
+            </div>
+          </div>
+          <!-- visualization -->
+          <div class="form__question">
+            <label class="form__input-name"
+              >Управление правами доступа пользователей к функциям клиентских
+              приложений SCADA-системы, информационная безопасность<label
+                class="star"
+                >*</label
+              ></label
+            >
+            <select
+              class="form__input-small"
+              id="RootUser"
+              name="Управление правами доступа пользователей к функциям клиентских приложений SCADA-системы"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="RootUserBlock" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Организация сбора диагностической информации по контролю
+                целостности программной среды, событиям, файлам, папкам, службам
+                и процессам.</label
+              >
+              <select
+                class="form__input-small"
+                id="
+              collectionOfDiagnostic"
+                name="Организация сбора диагностической информации по контролю целостности программной среды, событиям, файлам, папкам, службам и процессами."
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Аппаратная плата контроля системного блока
+                ServSensor-01:</label
+              >
+              <select
+                class="form__input-small"
+                id="servSensor"
+                name="Аппаратная плата контроля системного блока ServSensor-01"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >IntegrityGUARD аппаратная плата контроля системного блока с
+                выводом информации в подсистему визуализации</label
+              >
+              <select
+                class="form__input-small"
+                id="IntegrityGUARD"
+                name="IntegrityGUARD аппаратная плата"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Количество узлов с данной конфигурацией:</label
+            >
+
+            <input
+              type="text"
+              list="VizConnectsList"
+              class="form__input-small"
+              id="FatClientConnects"
+              name="Визуализация технологического процесса, тонкий клиент, количество подключений "
+              placeholder="Введите число или 'Нет'"
+            />
+
+            <!-- Подсказки -->
+            <datalist id="VizConnectsList">
+              <option value="Нет">Нет</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </datalist>
+          </div>
+
+          <div class="form__question">
+            <label class="form__input-name">Выберите тип лицензирования:</label>
+            <select
+              class="form__input-small"
+              id="licensingType"
+              name="Выберите тип лицензирования"
+            >
+              <option value="Аппаратный ключ">Аппаратный ключ</option>
+              <option value="Сетевой ключ">Сетевой ключ</option>
+              <option value="Программный ключ">Программный ключ</option>
+            </select>
+          </div>
+          <div class="form__question educated">
+            <label class="form__input-name">Программы обучения:</label>
+            <div class="educated__program">
+              <div class="educ__curse">
+                <span class="form__input-name-inside"
+                  >Курс "Администрирование" Integrity SCADA (40 часов)</span
+                >
+                <input
+                  type="checkbox"
+                  class="form__input-small course-checkbox"
+                  data-course-name="Курс Администрирование (40 часов)"
+                />
+              </div>
+
+              <div class="educ__curse">
+                <span class="form__input-name-inside"
+                  >Курс "Разработка" Integrity SCADA (24 часа)</span
+                >
+                <input
+                  type="checkbox"
+                  class="form__input-small course-checkbox"
+                  data-course-name="Курс Разработка (24 часа)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name">Добавить еще конфигурацию?</label>
+            <button class="btn__questionnaire-forward add-config" type="button">
+              Да
+            </button>
+          </div>
+          <button
+            type="submit"
+            id="sendEmailButton"
+            class="btn__questionnaire-send send-hid"
+          >
+            Отправить
+          </button>
+        </form>
+      </section>
+      <section class="section mt-84" id="questionnaire2" style="display: none">
+        <form
+          class="form__questionnaireTwo disp"
+          method="POST"
+          enctype="multipart/form-data"
+          id="formThree"
+        >
+          <h2 class="form__questionnaire-title">
+            Клиент-серверная система управления
+          </h2>
+
+          <div class="form__question">
+            <label class="form__input-name"
+              >Сервер ввода-вывода,количество сигналов
+              <p class="form__input-name-inside">
+                Сбор данных по технологическим протоколам, математическая
+                предобработка данных, генерация сообщений о событиях и авариях,
+                предоставление данных сторонним системам и клиентским
+                приложениям. В базовую поставку входят модули работы по OPC UA,
+                модуль событий и модуль вычислений.
+              </p>
+            </label>
+            <div style="display: flex; flex-direction: column">
+              <!-- Поле ввода -->
+              <input
+                type="text"
+                list="dataSignalOptions"
+                class="form__input-small dataSignal"
+                id="dataSignal"
+                name="Сбор данных по технологическим протоколам, математическая предобработка данных"
+                placeholder="Введите число или 'Нет'"
+              />
+
+              <!-- Подсказки -->
+              <datalist id="dataSignalOptions">
+                <option value="Нет"></option>
+                <option value="1000">1 000</option>
+                <option value="2000">2 000</option>
+                <option value="3000">3 000</option>
+                <option value="5000">5 000</option>
+                <option value="10000">10 000</option>
+                <option value="15000">15 000</option>
+                <option value="20000">20 000</option>
+                <option value="25000">25 000</option>
+                <option value="30000">30 000</option>
+                <option value="40000">40 000</option>
+                <option value="50000">50 000</option>
+                <option value="75000">75 000</option>
+                <option value="100000">100 000</option>
+                <option value="150000">150 000</option>
+                <option value="250000">250 000</option>
+                <option value="500000">500 000</option>
+                <option value="1000000">1 000 000</option>
+                <option value="2000000">2 000 000</option>
+              </datalist>
+            </div>
+          </div>
+
+          <div class="dopDrivers" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name"
+                >Требуется резервирование сервера</label
+              >
+              <select
+                class="form__input-small"
+                name="Требуется резервирование сервера"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+            <div class="form__question">
+              <label class="form__input-name"
+                >Нужны дополнительные драйверы для опроса устройств:<label
+                  class="star"
+                  >*</label
+                ></label
+              >
+              <select
+                id="additionalDrivers"
+                class="form__input-small"
+                name="Нужны дополнительные драйверы для опроса устройств"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+          </div>
+          <div class="additional-drivers-block" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль ГОСТ Р МЭК 104 мастер:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="moduleGOST104Master"
+                name="Модуль ГОСТ Р МЭК 104 мастер:"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль ГОСТ Р МЭК 104 слейв:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="moduleGOST104Slave"
+                name="Модуль ГОСТ Р МЭК 104 слейв"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль Modbus TCP/IP мастер</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusTCP/IP"
+                name="Модуль Modbus TCP/IP мастер/IP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль Modbus RTU</label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusRTU"
+                name="Модуль Modbus RTU"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль SNMP </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SNMP"
+                name="Модуль SNMP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль IEC 61850 MMS
+              </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="IEC61850MMS"
+                name="Модуль IEC 61850 MMS"
+              />
+            </div>
+
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль диагностки связи ICMP
+              </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ICMP"
+                name="Модуль диагностки связи ICMP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль статистики</label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModuleStatistics"
+                name="Модуль статистики"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данными со сторонними SQL базами.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SQLTransfer"
+                name="Шлюз обмена данными со сторонними SQL базами."
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Modbus TCP режим Slave</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusTCPSlave"
+                name="Modbus TCP режим Slave"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данными по протоколу MQTT</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="MQTT"
+                name="Шлюз обмена данными по протоколу MQTT"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз предоставления данных опроса контроллера Siemens по
+                протоколу S7</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SiemensS7"
+                name="Шлюз предоставления данных опроса контроллера Siemens по протоколу S7"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данных с контроллерами по протоколу
+                EtherNet/IP</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="EtherNet/IP"
+                name="Шлюз обмена данных с контроллерами по протоколу EtherNet/IP"
+              />
+            </div>
+          </div>
+
+          <!-- server part -->
+          <div class="form__question">
+            <label class="form__input-name"
+              >Сохранение данных в историю, количество сигналов:</label
+            >
+
+            <!-- Поле ввода -->
+            <input
+              type="text"
+              list="signalCountHistoryList"
+              class="form__input-small"
+              id="signalCountHistory"
+              name="Сохранение данных в историю, количество сигналов:"
+              placeholder="Введите число или 'Нет'"
+            />
+
+            <!-- Подсказки -->
+            <datalist id="signalCountHistoryList">
+              <option value="Нет"></option>
+              <option value="1000">1 000</option>
+              <option value="2000">2 000</option>
+              <option value="3000">3 000</option>
+              <option value="5000">5 000</option>
+              <option value="10000">10 000</option>
+              <option value="15000">15 000</option>
+              <option value="20000">20 000</option>
+              <option value="25000">25 000</option>
+              <option value="30000">30 000</option>
+              <option value="40000">40 000</option>
+              <option value="50000">50 000</option>
+              <option value="75000">75 000</option>
+              <option value="100000">100 000</option>
+              <option value="150000">150 000</option>
+              <option value="250000">250 000</option>
+              <option value="500000">500 000</option>
+              <option value="1000000">1 000 000</option>
+              <option value="2000000">2 000 000</option>
+            </datalist>
+          </div>
+          <div class="Servers" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name">Выделенные сервера истории</label>
+              <select
+                class="form__input-small"
+                id="AddsServers"
+                name="Выделенные сервера"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+
+            <div class="form__question">
+              <label class="form__input-name"
+                >Требуется резервирование сервера истории</label
+              >
+              <select
+                class="form__input-small"
+                id="RezervServer"
+                name="Требуется резервирование сервера истории"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form__question">
+            <label class="form__input-name"
+              >Визуализация технологического процесса, толстый клиент,
+              количество АРМ<label class="star">*</label></label
+            >
+            <div style="display: flex; flex-direction: column">
+              <input
+                type="text"
+                list="FatClientList"
+                class="form__input-small"
+                id="FatClient"
+                name="Визуализация технологического процесса, толстый клиент, количество АРМ"
+                placeholder="Введите число или 'Нет'"
+              />
+
+              <!-- Подсказки -->
+              <datalist id="FatClientList">
+                <option value="Нет"></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </datalist>
+            </div>
+          </div>
+          <div class="VisualizationBlock" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Отображение оперативных и исторических событий в табличной
+                форме</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="TableForm"
+                name="Отображение оперативных и исторических событий в табличной форме"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Отображение в виде графиков изменений технологических
+                параметров.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="GraphicsVis"
+                name="Отображение в виде графиков изменений технологических параметров"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Формирование отчетов.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="Reports"
+                name="Формирование отчетов"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >График зависимости одной величины от другой</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ValuesGraphic"
+                name="График зависимости одной величины от другой"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Просмотр видео с различных устройств</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="VideoPlayer"
+                name="Просмотр видео с различных устройств"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Формирование критических архивов значений и событий</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="CritArchive"
+                name="Формирование критических архивов значений и событий"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Уведомление пользователя о аварийных событиях посредством
+                telegram:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="telegramNotification"
+                name="Уведомление пользователя о аварийных событиях посредством telegram"
+              />
+            </div>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Визуализация технологического процесса, тонкий клиент, количество
+              конкурентных подключений
+            </label>
+            <input
+              type="number"
+              list="VizConnects"
+              placeholder="Введите число или 'Нет'"
+              class="form__input-small"
+              name="Визуализация технологического процесса, тонкий клиент, количество подключений  "
+            />
+            <datalist id="VizConnects">
+              <option value="Нет">Нет</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </datalist>
+          </div>
+          <!-- visualization -->
+          <div class="form__question">
+            <label class="form__input-name"
+              >Управление правами доступа пользователей к функциям клиентских
+              приложений SCADA-системы, информационная безопасность<label
+                class="star"
+                >*</label
+              ></label
+            >
+            <select
+              class="form__input-small"
+              id="RootUser"
+              name="Управление правами доступа пользователей к функциям клиентских приложений SCADA-системы"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="RootUserBlock" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Организация сбора диагностической информации по контролю
+                целостности программной среды, событиям, файлам, папкам, службам
+                и процессам.</label
+              >
+              <select
+                class="form__input-small"
+                id="
+              collectionOfDiagnostic"
+                name="Организация сбора диагностической информации по контролю целостности программной среды, событиям, файлам, папкам, службам и процессами."
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Аппаратная плата контроля системного блока
+                ServSensor-01:</label
+              >
+              <select
+                class="form__input-small"
+                id="servSensor"
+                name="Аппаратная плата контроля системного блока ServSensor-01"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >IntegrityGUARD аппаратная плата контроля системного блока с
+                выводом информации в подсистему визуализации</label
+              >
+              <select
+                class="form__input-small"
+                id="IntegrityGUARD"
+                name="IntegrityGUARD аппаратная плата"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- IB -->
+
+          <div class="form__question">
+            <label class="form__input-name">Выберите тип лицензирования:</label>
+            <select
+              class="form__input-small"
+              id="licensingType"
+              name="Выберите тип лицензирования"
+            >
+              <option value="Аппаратный ключ">Аппаратный ключ</option>
+              <option value="Сетевой ключ">Сетевой ключ</option>
+              <option value="Программный ключ">Программный ключ</option>
+            </select>
+          </div>
+
+          <div class="form__question">
+            <label class="form__input-name">Программы обучения:</label>
+
+            <div class="educated__program">
+              <div class="educ__curse">
+                <span class="form__input-name-inside"
+                  >Курс "Администрирование" Integrity SCADA (40 часов)</span
+                >
+                <input
+                  type="checkbox"
+                  class="form__input-small course-checkbox"
+                  data-course-name="Курс Администрирование (40 часов)"
+                />
+              </div>
+              <div class="educ__curse">
+                <span class="form__input-name-inside"
+                  >Курс "Разработка" Integrity SCADA (24 часа)</span
+                >
+                <input
+                  type="checkbox"
+                  class="form__input-small course-checkbox"
+                  data-course-name="Курс Разработка (24 часа)"
+                />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn__questionnaire-send">
+            Отправить
+          </button>
+        </form>
+      </section>
+      <section class="section mt-84" id="questionnaire3" style="display: none">
+        <form
+          class="form__questionnaireTwo disp"
+          method="POST"
+          enctype="multipart/form-data"
+          id="formFour"
+        >
+          <h2 class="form__questionnaire-title">
+            Распределенные системы управления
+          </h2>
+
+          <div class="form__question">
+            <label class="form__input-name"
+              >Введите количество выделенных пунктов управления</label
+            >
+            <select
+              type="number"
+              list="ControlPointOption"
+              class="form__input-small"
+              id="ControlPoint"
+              name="Введите количество выделенных пунктов управления"
+            >
+              <option value="">Нет</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div id="added__quests"></div>
+          <div class="form__q__hidden">
+            <div class="form__question">
+              <label class="form__input-name"
+                >Выберите тип лицензирования:</label
+              >
+              <select
+                class="form__input-small"
+                id="licensingType"
+                name="Выберите тип лицензирования"
+              >
+                <option value="Аппаратный ключ">Аппаратный ключ</option>
+                <option value="Сетевой ключ">Сетевой ключ</option>
+                <option value="Программный ключ">Программный ключ</option>
+              </select>
+            </div>
+
+            <div class="form__question">
+              <label class="form__input-name">Программы обучения:</label>
+
+              <div class="educated__program">
+                <div class="educ__curse">
+                  <span class="form__input-name-inside"
+                    >Курс "Администрирование" Integrity SCADA (40 часов)</span
+                  >
+                  <input
+                    type="checkbox"
+                    class="form__input-small course-checkbox"
+                    data-course-name="Курс Администрирование (40 часов)"
+                  />
+                </div>
+                <div class="educ__curse">
+                  <span class="form__input-name-inside"
+                    >Курс "Разработка" Integrity SCADA (24 часа)</span
+                  >
+                  <input
+                    type="checkbox"
+                    class="form__input-small course-checkbox"
+                    data-course-name="Курс Разработка (24 часа)"
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              type="submit"
+              id="exportDistributedData"
+              class="btn__questionnaire-send"
+            >
+              Отправить
+            </button>
+          </div>
+        </form>
+      </section>
+      <section class="section mt-84" id="questionnaire4" style="display: none">
+        <form
+          class="form__questionnaireTwo disp"
+          method="POST"
+          enctype="multipart/form-data"
+          id="formFive"
+        >
+          <h2 class="form__questionnaire-title">
+            Гетерогенная система управления
+          </h2>
+
+          <div class="form__question">
+            <label class="form__input-name"
+              >Введите количество выделенных пунктов управления</label
+            >
+            <select
+              class="form__input-small"
+              id="ControlPoint"
+              name="Введите количество выделенных пунктов управления"
+            >
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Сервер ввода-вывода
+              <p class="form__input-name-inside">
+                Сбор данных по технологическим протоколам, математическая
+                предобработка данных, генерация сообщений о событиях и авариях,
+                предоставление данных сторонним системам и клиентским
+                приложениям. В базовую поставку входят модули работы по OPC UA,
+                модуль событий и модуль вычислений.
+              </p>
+            </label>
+            <select
+              class="form__input-small dataSignal"
+              id="dataSignal"
+              name="Сервер ввода-вывода"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name">Количество сигналов:</label>
+
+            <!-- Поле ввода -->
+            <input
+              type="text"
+              list="signalCountList"
+              class="form__input-small"
+              id="signalCount"
+              name="Количество сигналов"
+              placeholder="Введите число или 'Нет'"
+            />
+
+            <!-- Подсказки -->
+            <datalist id="signalCountList">
+              <option value="Нет"></option>
+              <option value="1000">1 000</option>
+              <option value="2000">2 000</option>
+              <option value="3000">3 000</option>
+              <option value="5000">5 000</option>
+              <option value="10000">10 000</option>
+              <option value="15000">15 000</option>
+              <option value="20000">20 000</option>
+              <option value="25000">25 000</option>
+              <option value="30000">30 000</option>
+              <option value="40000">40 000</option>
+              <option value="50000">50 000</option>
+              <option value="75000">75 000</option>
+              <option value="100000">100 000</option>
+              <option value="150000">150 000</option>
+              <option value="250000">250 000</option>
+              <option value="500000">500 000</option>
+              <option value="1000000">1 000 000</option>
+              <option value="2000000">2 000 000</option>
+            </datalist>
+          </div>
+
+          <div class="form__question">
+            <label class="form__input-name"
+              >Требуется резервирование сервера</label
+            >
+            <select
+              class="form__input-small"
+              name="Требуется резервирование сервера"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="form__question" id="dopDrivers" style="display: none">
+            <label class="form__input-name"
+              >Нужны дополнительные драйверы для опроса устройств:<label
+                class="star"
+                >*</label
+              ></label
+            >
+            <select
+              class="form__input-small"
+              id="additionalDrivers"
+              name="Нужны дополнительные драйверы для опроса устройств"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="additional-drivers-block" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль ГОСТ Р МЭК 104 мастер:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="moduleGOST104Master"
+                name="Модуль ГОСТ Р МЭК 104 мастер:"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль ГОСТ Р МЭК 104 слейв:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="moduleGOST104Slave"
+                name="Модуль ГОСТ Р МЭК 104 слейв"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль Modbus TCP/IP мастер</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusTCP/IP"
+                name="Модуль Modbus TCP/IP мастер/IP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль Modbus RTU</label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusRTU"
+                name="Модуль Modbus RTU"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль SNMP </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SNMP"
+                name="Модуль SNMP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль IEC 61850 MMS
+              </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="IEC61850MMS"
+                name="Модуль IEC 61850 MMS"
+              />
+            </div>
+
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Модуль диагностки связи ICMP
+              </label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ICMP"
+                name="Модуль диагностки связи ICMP"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside">Модуль статистики</label>
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModuleStatistics"
+                name="Модуль статистики"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данными со сторонними SQL базами.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SQLTransfer"
+                name="Шлюз обмена данными со сторонними SQL базами."
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Modbus TCP режим Slave</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ModbusTCPSlave"
+                name="Modbus TCP режим Slave"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данными по протоколу MQTT</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="MQTT"
+                name="Шлюз обмена данными по протоколу MQTT"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз предоставления данных опроса контроллера Siemens по
+                протоколу S7</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="SiemensS7"
+                name="Шлюз предоставления данных опроса контроллера Siemens по протоколу S7"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Шлюз обмена данных с контроллерами по протоколу
+                EtherNet/IP</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="EtherNet/IP"
+                name="Шлюз обмена данных с контроллерами по протоколу EtherNet/IP"
+              />
+            </div>
+          </div>
+          <!-- server part -->
+          <div class="form__question">
+            <label class="form__input-name"
+              >Сохранение данных в историю, количество сигналов:</label
+            >
+
+            <!-- Поле ввода -->
+            <input
+              type="text"
+              list="signalCountHistoryList"
+              class="form__input-small dataSignal"
+              id="signalCountHistory"
+              name="Сохранение данных в историю, количество сигналов:"
+              placeholder="Введите число или 'Нет'"
+            />
+
+            <!-- Подсказки -->
+            <datalist id="signalCountHistoryList">
+              <option value="Нет"></option>
+              <option value="1000">1 000</option>
+              <option value="2000">2 000</option>
+              <option value="3000">3 000</option>
+              <option value="5000">5 000</option>
+              <option value="10000">10 000</option>
+              <option value="15000">15 000</option>
+              <option value="20000">20 000</option>
+              <option value="25000">25 000</option>
+              <option value="30000">30 000</option>
+              <option value="40000">40 000</option>
+              <option value="50000">50 000</option>
+              <option value="75000">75 000</option>
+              <option value="100000">100 000</option>
+              <option value="150000">150 000</option>
+              <option value="250000">250 000</option>
+              <option value="500000">500 000</option>
+              <option value="1000000">1 000 000</option>
+              <option value="2000000">2 000 000</option>
+            </datalist>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Требуется резервирование сервера истории</label
+            >
+            <select
+              class="form__input-small"
+              id="RezervServer"
+              name="Требуется резервирование сервера истории"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="dopDrivers" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name">Выделенные сервера истории</label>
+              <select
+                class="form__input-small"
+                id="AddsServers"
+                name="Выделенные сервера"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Требуется интеграция с внешней системой через шлюз транспорта
+              данных, сервер ДМЗ, количество внешних подключений</label
+            >
+            <select
+              class="form__input-small"
+              name="Требуется интеграция с внешней системой через шлюз транспорта данных, сервер ДМЗ, количество внешних подключений"
+            >
+              <option>Нет</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Визуализация технологического процесса, тонкий клиент, количество
+              подключений <label class="star">*</label></label
+            >
+            <input
+              type="number"
+              list="VizConnects"
+              class="form__input-small"
+              id="FatClientConnects"
+              name="Визуализация технологического процесса, тонкий клиент, количество подключений  "
+            />
+            <datalist id="VizConnects">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </datalist>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Визуализация технологического процесса, толстый клиент,
+              количество АРМ<label class="star">*</label></label
+            >
+            <select
+              class="form__input-small"
+              id="FatClient"
+              name="Визуализация технологического процесса, толстый клиент"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="VisualizationBlock" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Отображение оперативных и исторических событий в табличной
+                форме</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="TableForm"
+                name="Отображение оперативных и исторических событий в табличной форме"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Отображение в виде графиков изменений технологических
+                параметров.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="GraphicsVis"
+                name="Отображение в виде графиков изменений технологических параметров"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Формирование отчетов.</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="Reports"
+                name="Формирование отчетов"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >График зависимости одной величины от другой</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="ValuesGraphic"
+                name="График зависимости одной величины от другой"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Просмотр видео с различных устройств</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="VideoPlayer"
+                name="Просмотр видео с различных устройств"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Формирование критических архивов значений и событий</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="CritArchive"
+                name="Формирование критических архивов значений и событий"
+              />
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Уведомление пользователя о аварийных событиях посредством
+                telegram:</label
+              >
+              <input
+                type="checkbox"
+                class="form__input-small"
+                id="telegramNotification"
+                name="Уведомление пользователя о аварийных событиях посредством telegram"
+              />
+            </div>
+          </div>
+          <div class="form__question">
+            <label class="form__input-name"
+              >Визуализация технологического процесса, тонкий клиент, количество
+              конкурентных подключений</label
+            >
+            <input
+              type="checkbox"
+              class="form__input-small"
+              id="telegramNotification"
+              name="Визуализация технологического процесса, тонкий клиент, количество конкурентных подключений"
+            />
+          </div>
+          <!-- visualization -->
+          <div class="form__question">
+            <label class="form__input-name"
+              >Управление правами доступа пользователей к функциям клиентских
+              приложений SCADA-системы, информационная безопасность<label
+                class="star"
+                >*</label
+              ></label
+            >
+            <select
+              class="form__input-small"
+              id="RootUser"
+              name="Управление правами доступа пользователей к функциям клиентских приложений SCADA-системы"
+            >
+              <option value="Нет">Нет</option>
+              <option value="Да">Да</option>
+            </select>
+          </div>
+          <div class="RootUserBlock" style="display: none">
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Организация сбора диагностической информации по контролю
+                целостности программной среды, событиям, файлам, папкам, службам
+                и процессам.</label
+              >
+              <select
+                class="form__input-small"
+                id="
+              collectionOfDiagnostic"
+                name="Организация сбора диагностической информации по контролю целостности программной среды, событиям, файлам, папкам, службам и процессами."
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >Аппаратная плата контроля системного блока
+                ServSensor-01:</label
+              >
+              <select
+                class="form__input-small"
+                id="servSensor"
+                name="Аппаратная плата контроля системного блока ServSensor-01"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+            <div class="form__question">
+              <label class="form__input-name-inside"
+                >IntegrityGUARD аппаратная плата контроля системного блока с
+                выводом информации в подсистему визуализации</label
+              >
+              <select
+                class="form__input-small"
+                id="IntegrityGUARD"
+                name="IntegrityGUARD аппаратная плата"
+              >
+                <option value="Нет">Нет</option>
+                <option value="Да">Да</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- IB -->
+
+          <div class="form__question">
+            <label class="form__input-name">Выберите тип лицензирования:</label>
+            <select
+              class="form__input-small"
+              id="licensingType"
+              name="Выберите тип лицензирования"
+            >
+              <option value="Аппаратный ключ">Аппаратный ключ</option>
+              <option value="Сетевой ключ">Сетевой ключ</option>
+              <option value="Программный ключ">Программный ключ</option>
+            </select>
+          </div>
+
+          <div class="form__question">
+            <label class="form__input-name">Программы обучения:</label>
+
+            <div class="educated__program">
+              <div class="educ__curse">
+                <span class="form__input-name-inside"
+                  >Курс "Администрирование" Integrity SCADA (40 часов)</span
+                >
+                <input
+                  type="checkbox"
+                  class="form__input-small course-checkbox"
+                  data-course-name="Курс Администрирование (40 часов)"
+                />
+              </div>
+              <div class="educ__curse">
+                <span class="form__input-name-inside"
+                  >Курс "Разработка" Integrity SCADA (24 часа)</span
+                >
+                <input
+                  type="checkbox"
+                  class="form__input-small course-checkbox"
+                  data-course-name="Курс Разработка (24 часа)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn__questionnaire-send">
+            Отправить
+          </button>
+        </form>
+      </section>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__blocks">
+          <div class="footer__block">
+            <h2 class="footer__title">Головной офис</h2>
+            <p class="footer__item footer__email-icon mt-30">int@scadaint.ru</p>
+            <p class="footer__item footer__mobile-icon">+7 (3822) 601-000</p>
+          </div>
+          <div class="footer__block">
+            <h2 class="footer__title">Техническая поддержка</h2>
+            <p class="footer__item footer__email-icon mt-30">
+              support@scadaint.ru
+            </p>
+            <p class="footer__item footer__mobile-icon">+7 (3822) 601-444</p>
+          </div>
+          <div class="footer__block">
+            <h2 class="footer__title">Коммерческий отдел</h2>
+            <p class="footer__item footer__email-icon mt-30">
+              commerce@scadaint.ru
+            </p>
+            <p class="footer__item footer__mobile-icon">+7 (3822) 601-114</p>
+          </div>
+        </div>
+      </div>
+      <hr class="footer__hr mt-50" />
+      <h4 class="footer__copyright">(с) 2022 Все права защищены</h4>
+    </footer>
+    <script src="scripts/questionnaire.js"></script>
+    <script src="scripts/regionscript.js"></script>
+  </body>
+</html>

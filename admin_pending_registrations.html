@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/index.css">
+    <title>Админка: Заявки на регистрацию</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin-top: 1rem;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 1600px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .actions button {
+            padding: 8px 12px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-approve {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-reject {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-approve:hover {
+            background-color: #45a049;
+        }
+        .btn-reject:hover {
+            background-color: #da190b;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            text-align: center;
+            font-style: italic;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .no-users {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Стили для списка карточек */
+        .users-list {
+            display: grid;
+            gap: 20px; /* Отступ между карточками */
+            margin-top: 20px;
+        }
+
+        /* Каждая карточка */
+        .user-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease; /* Плавный hover */
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px); /* Легкий подъем на hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Поля внутри карточки */
+        .user-field {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-left: 1rem;
+        }
+
+        .user-field .label {
+            font-weight: bold;
+            color: #333;
+            flex: 1; /* Занимает пространство */
+        }
+
+        .user-field .value {
+            color: #555;
+            flex: 2;
+            text-align: right;
+        }
+
+        /* Кнопки действий в карточке */
+        .user-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .user-actions button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 768px) {
+            .users-list {
+                grid-template-columns: 1fr; /* Один столбец на мобильных */
+            }
+
+            .user-card {
+                padding: 15px;
+                flex-direction: column;
+            }
+
+            .user-field {
+                flex-direction: column; /* Метка сверху, значение снизу */
+                align-items: flex-start;
+            }
+
+            .user-field .value {
+                text-align: left;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="admin-esc" href="./admin-tickets.html">Назад</a>
+        <h1>Заявки на регистрацию</h1>
+        <div id="messageContainer"></div>
+        <div id="usersTableContainer">
+            <div id="pendingUsersList" class="users-list">
+                <!-- Карточки будут загружены сюда -->
+            </div>
+            <div id="loadingMessage" class="loading" style="display: none;">Загрузка данных...</div>
+            <div id="noUsersMessage" class="no-users" style="display: none;">Нет заявок на регистрацию.</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://devsanya.ru/api/admin';
+        const LOCAL_URL = 'https://scadaint.ru/api/admin';
+        const pendingUsersList = document.getElementById('pendingUsersList');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const noUsersMessage = document.getElementById('noUsersMessage');
+        const messageContainer = document.getElementById('messageContainer');
+        const TOKEN_KEY = 'adminAuthToken';
+        function getAdminToken() {
+            return localStorage.getItem(TOKEN_KEY); // Или откуда вы берете токен
+        }
+
+        function displayMessage(text, type = 'success') {
+            messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        async function fetchPendingUsers() {
+            loadingMessage.style.display = 'block';
+            noUsersMessage.style.display = 'none';
+            pendingUsersList.innerHTML = ''; // Очищаем перед загрузкой
+
+            const token = getAdminToken();
+            if (!token) {
+                displayMessage('Ошибка: Токен администратора не найден. Пожалуйста, войдите снова.', 'error');
+                loadingMessage.style.display = 'none';
+                // Можно добавить редирект на страницу логина администратора
+                // window.location.href = '/admin-login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${LOCAL_URL}/users?status=pending_approval`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Ошибка ${response.status}`);
+                }
+
+                const data = await response.json();
+                renderUsers(data.users);
+
+            } catch (error) {
+                console.error('Ошибка при загрузке пользователей:', error);
+                displayMessage(`Ошибка при загрузке пользователей: ${error.message}`, 'error');
+            } finally {
+                loadingMessage.style.display = 'none';
+            }
+        }
+
+        function renderUsers(users) {
+            pendingUsersList.innerHTML = ''; // Очищаем на всякий случай
+            if (!users || users.length === 0) {
+                noUsersMessage.style.display = 'block';
+                return;
+            }
+            noUsersMessage.style.display = 'none';
+
+            users.forEach(user => {
+                const card = document.createElement('div');
+                card.classList.add('user-card');
+
+                // Поля пользователя
+                const fields = [
+                    { label: 'ID', value: user.id },
+                    { label: 'ФИО', value: user.fio || 'N/A' },
+                    { label: 'Email', value: user.email || 'N/A' },
+                    { label: 'Компания', value: user.company || 'N/A' },
+                    { label: 'Должность', value: user.position || 'N/A' },
+                    { label: 'Телефон', value: user.phone || 'N/A' },
+                    { label: 'Город', value: user.city || 'N/A' },
+                    { label: 'Сфера', value: user.activity_sphere || 'N/A' },
+                    { label: 'Дата заявки', value: user.created_at ? new Date(user.created_at).toLocaleDateString('ru-RU') : 'N/A' }
+                ];
+
+                fields.forEach(field => {
+                    const fieldDiv = document.createElement('div');
+                    fieldDiv.classList.add('user-field');
+                    fieldDiv.innerHTML = `
+                        <span class="label">${field.label}:</span>
+                        <span class="value">${field.value}</span>
+                    `;
+                    card.appendChild(fieldDiv);
+                });
+
+                // Кнопки действий
+                const actionsDiv = document.createElement('div');
+                actionsDiv.classList.add('user-actions');
+
+                const approveButton = document.createElement('button');
+                approveButton.textContent = 'Одобрить';
+                approveButton.classList.add('btn-approve');
+                approveButton.dataset.userId = user.id;
+                approveButton.onclick = () => handleApprove(user.id);
+                actionsDiv.appendChild(approveButton);
+
+                const rejectButton = document.createElement('button');
+                rejectButton.textContent = 'Отклонить';
+                rejectButton.classList.add('btn-reject');
+                rejectButton.dataset.userId = user.id;
+                rejectButton.onclick = () => handleReject(user.id);
+                actionsDiv.appendChild(rejectButton);
+
+                card.appendChild(actionsDiv);
+                pendingUsersList.appendChild(card);
+            });
+        }
+
+        async function handleApprove(userId) {
+            if (!confirm(`Вы уверены, что хотите ОДОБРИТЬ заявку пользователя ID: ${userId}?`)) {
+                return;
+            }
+            const token = getAdminToken();
+            if (!token) {
+                 displayMessage('Ошибка: Токен администратора не найден.', 'error'); return;
+            }
+
+            try {
+                const response = await fetch(`${LOCAL_URL}/users/${userId}/approve`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Ошибка ${response.status}`);
+                }
+
+                const result = await response.json();
+                displayMessage(result.message || 'Пользователь успешно одобрен.', 'success');
+                fetchPendingUsers(); // Обновляем список
+
+            } catch (error) {
+                console.error('Ошибка при одобрении пользователя:', error);
+                displayMessage(`Ошибка при одобрении: ${error.message}`, 'error');
+            }
+        }
+
+        async function handleReject(userId) {
+            const reason = prompt(`Вы уверены, что хотите ОТКЛОНИТЬ заявку пользователя ID: ${userId}?\nЕсли да, укажите причину (необязательно):`);
+            if (reason === null) { // Пользователь нажал "Отмена"
+                return;
+            }
+
+            const token = getAdminToken();
+             if (!token) {
+                 displayMessage('Ошибка: Токен администратора не найден.', 'error'); return;
+            }
+
+            try {
+                const response = await fetch(`${LOCAL_URL}/users/${userId}/reject`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ reason: reason || undefined }) // Отправляем причину, если она есть
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Ошибка ${response.status}`);
+                }
+                const result = await response.json();
+                displayMessage(result.message || 'Заявка пользователя успешно отклонена.', 'success');
+                fetchPendingUsers(); // Обновляем список
+
+            } catch (error) {
+                console.error('Ошибка при отклонении пользователя:', error);
+                displayMessage(`Ошибка при отклонении: ${error.message}`, 'error');
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPendingUsers();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тех. поддержка - Список заявок</title>
+    <link rel="stylesheet" href="./styles/index.css">
+</head>
+<body class="body_admin_ticket">
+    <div class="admin-ticket-header">
+	<h1>Админ.панель</h1>
+    <a class="admin-link" href="./admin_pending_registrations.html">Заявки на регистрацию</a>
+    <a class="admin-link" href="./admin-media.html">Документы</a>
+    <a class="admin-link" href="./admin-news.html">Новости</a>
+	<button id="logoutAdminBtn" class="sidebar-button danger-button">Выхoд</button>
+    </div>
+
+    <div class="filters">
+        <label for="statusFilter">Статус:</label>
+        <select id="statusFilter">
+            <option value="all">Все</option>
+            <option value="open" selected>Открытые</option>
+            <option value="closed">Закрытые</option>
+            <option value="waiting_for_user">Ожидают ответа пользователя</option>
+            <option value="in_progress">В работе</option>
+            <option value="reopened">Переоткрытые</option>
+        </select>
+        <label for="userFilter">Пользователь:</label>
+        <select id="userFilter">
+            <option value="all" selected>Все пользователи</option>
+        </select>
+	<label for="companyFilterInput">Компания:</label>
+	<input type="text" id="companyFilterInput" placeholder="Имя компании">
+        <button class="btn-admin-filter" id="applyFilterBtn">Применить фильтр</button>
+    </div>
+
+    <div id="loadingIndicator" class="loading" style="display: none;">Загрузка заявок...</div>
+    <div id="errorMessages" class="error"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Тема</th>
+                <th>Статус</th>
+                <th>Пользователь</th>
+                <th>Email</th>
+                <th>Компания</th>
+                <th>Создана</th>
+                <th>Обновлена</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody id="ticketsTableBody">
+        </tbody>
+    </table>
+    <div id="ticketModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeTicketModal()">&times;</span>
+            <h2 id="modalTicketSubject">Тема тикета</h2>
+            <p><strong>Номер:</strong> <span id="modalTicketNumber"></span></p>
+            <p><strong>Пользователь:</strong> <span id="modalTicketUser"></span> (<span id="modalTicketUserEmail"></span>)</p>
+            <p><strong>Статус:</strong> <span id="modalTicketStatus"></span></p>
+            <hr>
+            <div id="modalMessagesContainer" class="messages-history">
+                <!-- Сообщения будут здесь -->
+            </div>
+            <hr>
+            <div class="reply-form">
+                <h3>Ваш ответ:</h3>
+                <textarea id="adminReplyMessage" rows="5" placeholder="Введите ваш ответ здесь..."></textarea>
+                <div class="form-group">
+                    <label for="adminReplyAttachments">Вложения (до 5 файлов):</label>
+                    <input type="file" id="adminReplyAttachments" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg">
+                </div>
+                <button id="sendAdminReplyButton" class="btn-send-reply">Отправить ответ</button>
+                <div id="replyStatusMessage" class="status-message"></div>
+                <div class="admin-actions">
+                    <button id="closeTicketBtn" class="btn-close-ticket">Закрыть заявку</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pagination" id="paginationControls">
+    </div>
+
+    <script>
+    // Файл: admin-tickets-client.js
+
+const API_BASE_URL = 'https://scadaint.ru'; //
+const TOKEN_KEY = 'adminAuthToken'; // Ключ для токена в localStorage
+const SERVER_API = 'https://devsanya.ru';
+// Элементы DOM
+const ticketsTableBody = document.getElementById('ticketsTableBody'); // Для таблицы
+const ticketsListDiv = document.getElementById('ticketsList'); // Для карточек, если используется
+const statusFilterSelect = document.getElementById('statusFilter');
+const userFilterSelect = document.getElementById('userFilter');
+const applyFilterBtn = document.getElementById('applyFilterBtn');
+const companyFilterInput = document.getElementById('companyFilterInput');
+const paginationControls = document.getElementById('paginationControls');
+const errorMessagesDiv = document.getElementById('errorMessages');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const logoutAdminBtn = document.getElementById('logoutAdminBtn');
+const closeTicketBtn = document.getElementById('closeTicketBtn');
+
+const ticketModal = document.getElementById('ticketModal');
+const modalTicketSubject = document.getElementById('modalTicketSubject');
+const modalTicketNumber = document.getElementById('modalTicketNumber');
+const modalTicketUser = document.getElementById('modalTicketUser');
+const modalTicketUserEmail = document.getElementById('modalTicketUserEmail');
+const modalTicketStatus = document.getElementById('modalTicketStatus');
+const modalMessagesContainer = document.getElementById('modalMessagesContainer');
+const adminReplyMessage = document.getElementById('adminReplyMessage');
+const adminReplyAttachments = document.getElementById('adminReplyAttachments');
+const sendAdminReplyButton = document.getElementById('sendAdminReplyButton');
+const replyStatusMessage = document.getElementById('replyStatusMessage');
+
+let currentOpenTicketNumber = null;
+
+let currentPage = 1;
+const itemsPerPage = 10; // Должно соответствовать 'limit' на сервере
+
+
+async function closeTicketAsAdmin(ticketNumber) {
+    const token = getAdminToken();
+    if (!token) {
+        alert('Ошибка: Токен администратора не найден.');
+        return;
+    }
+
+    if (!confirm('Вы уверены, что хотите закрыть эту заявку? Это действие нельзя отменить.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/tickets/${ticketNumber}/close`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || `Ошибка ${response.status}`);
+        }
+
+        alert(result.message || 'Заявка успешно закрыта');
+
+        // Обновляем статус в модальном окне
+        modalTicketStatus.textContent = 'Закрыта';
+
+        // Обновляем список заявок
+        fetchAndDisplayTickets(
+            statusFilterSelect.value,
+            currentPage,
+            userFilterSelect.value,
+            companyFilterInput.value
+        );
+
+    } catch (error) {
+        console.error('Ошибка при закрытии заявки:', error);
+        alert(`Ошибка при закрытии заявки: ${error.message}`);
+    }
+}
+
+// Назначение обработчика события
+if (closeTicketBtn) {
+    closeTicketBtn.addEventListener('click', () => {
+        if (currentOpenTicketNumber) {
+            closeTicketAsAdmin(currentOpenTicketNumber);
+        }
+    });
+}
+
+function renderAdminTickets(tickets) { // Ваша функция рендеринга списка тикетов
+    const ticketsTableBody = document.getElementById('adminTicketsTableBody'); // Убедитесь, что ID правильный
+    ticketsTableBody.innerHTML = '';
+
+    if (!tickets || tickets.length === 0) {
+        ticketsTableBody.innerHTML = '<tr><td colspan="8" class="text-center">Заявки не найдены.</td></tr>';
+        return;
+    }
+
+    tickets.forEach(ticket => {
+        const row = ticketsTableBody.insertRow();
+        // ... (ваши ячейки для id, ticket_number, subject, user_fio, status и т.д.)
+        row.insertCell().textContent = ticket.id;
+        row.insertCell().textContent = ticket.ticket_number;
+        row.insertCell().textContent = ticket.subject;
+        row.insertCell().textContent = ticket.user_fio + (ticket.user_company ? ` (${ticket.user_company})` : '');
+        row.insertCell().textContent = ticket.status;
+        row.insertCell().textContent = new Date(ticket.updated_at).toLocaleString('ru-RU');
+        // ...
+
+        const actionsCell = row.insertCell();
+        const viewButton = document.createElement('button');
+        viewButton.textContent = 'Просмотр/Ответить';
+        viewButton.classList.add('btn', 'btn-info', 'btn-sm'); // Пример классов Bootstrap
+        viewButton.onclick = () => openTicketModal(ticket.ticket_number);
+        actionsCell.appendChild(viewButton);
+    });
+}
+
+
+async function openTicketModal(ticketNumber) {
+    currentOpenTicketNumber = ticketNumber;
+    replyStatusMessage.textContent = '';
+    adminReplyMessage.value = '';
+    adminReplyAttachments.value = null; // Сбрасываем поле для файлов
+
+    const token = getAdminToken(); // Ваша функция получения токена админа
+    if (!token) {
+        alert('Ошибка: Токен администратора не найден.');
+        return;
+    }
+
+    ticketModal.style.display = 'block';
+    modalMessagesContainer.innerHTML = '<p>Загрузка сообщений...</p>'; // Индикатор загрузки
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/tickets/${ticketNumber}/details`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.message || `Ошибка ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data)
+        modalTicketSubject.textContent = data.ticket.subject;
+        modalTicketNumber.textContent = data.ticket.ticket_number;
+        modalTicketUser.textContent = data.ticket.user_fio;
+        modalTicketUserEmail.textContent = data.ticket.user_email;
+        modalTicketStatus.textContent = adapterStatus(data.ticket.status);
+
+        renderMessagesInModal(data.messages);
+
+    } catch (error) {
+        console.error('Ошибка при загрузке деталей тикета:', error);
+        modalMessagesContainer.innerHTML = `<p style="color: red;">Ошибка загрузки: ${error.message}</p>`;
+    }
+}
+
+function renderMessagesInModal(messages) {
+    modalMessagesContainer.innerHTML = '';
+    if (!messages || messages.length === 0) {
+        modalMessagesContainer.innerHTML = '<p>Сообщений нет.</p>';
+        return;
+    }
+
+    messages.forEach(msg => {
+        console.log(msg)
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message-item', msg.sender_type); // 'user' или 'support'
+
+        const senderP = document.createElement('p');
+        senderP.classList.add('message-sender');
+        senderP.textContent = `${msg.sender_name} (${msg.sender_email || 'N/A'})`;
+
+        const timeSpan = document.createElement('span');
+        timeSpan.classList.add('message-time');
+        timeSpan.textContent = new Date(msg.created_at).toLocaleString('ru-RU');
+
+        const textP = document.createElement('p');
+        textP.classList.add('message-text');
+        textP.textContent = msg.message;
+
+        messageDiv.appendChild(senderP);
+        messageDiv.appendChild(textP);
+
+        if (msg.attachments && msg.attachments.length > 0) {
+            const attachmentsDiv = document.createElement('div');
+            attachmentsDiv.classList.add('message-attachments');
+            msg.attachments.forEach(att => {
+                const link = document.createElement('a');
+                link.classList.add('attachment-link');
+                link.href = `/server/uploads/${att.file_name}`;
+                link.textContent = `Вложение: ${att.file_name} (${(att.file_size / 1024).toFixed(1)} KB)`;
+                // link.target = '_blank'; // Открывать в новой вкладке
+                attachmentsDiv.appendChild(link);
+            });
+            messageDiv.appendChild(attachmentsDiv);
+        }
+        messageDiv.appendChild(timeSpan);
+        modalMessagesContainer.appendChild(messageDiv);
+    });
+    // Прокрутка к последнему сообщению
+    modalMessagesContainer.scrollTop = modalMessagesContainer.scrollHeight;
+}
+
+function closeTicketModal() {
+    ticketModal.style.display = 'none';
+    currentOpenTicketNumber = null;
+}
+
+// Закрытие модального окна по клику вне его (опционально)
+window.onclick = function(event) {
+    if (event.target == ticketModal) {
+        closeTicketModal();
+    }
+}
+
+sendAdminReplyButton.onclick = async () => {
+    if (!currentOpenTicketNumber) return;
+
+    const messageText = adminReplyMessage.value.trim();
+    if (!messageText) {
+        replyStatusMessage.textContent = 'Сообщение не может быть пустым.';
+        replyStatusMessage.style.color = 'red';
+        return;
+    }
+
+    const token = getAdminToken();
+    if (!token) {
+        replyStatusMessage.textContent = 'Ошибка: Токен администратора не найден.';
+        replyStatusMessage.style.color = 'red';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('message', messageText);
+
+    const files = adminReplyAttachments.files;
+    if (files.length > 0) {
+        if (files.length > 5) {
+             replyStatusMessage.textContent = 'Можно прикрепить не более 5 файлов.';
+             replyStatusMessage.style.color = 'red';
+             return;
+        }
+        for (let i = 0; i < files.length; i++) {
+            formData.append('attachments', files[i]);
+        }
+    }
+
+    sendAdminReplyButton.disabled = true;
+    replyStatusMessage.textContent = 'Отправка...';
+    replyStatusMessage.style.color = 'blue';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/tickets/${currentOpenTicketNumber}/reply`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+                // 'Content-Type': 'multipart/form-data' // FormData устанавливает это автоматически с boundary
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || `Ошибка ${response.status}`);
+        }
+
+        replyStatusMessage.textContent = result.message || 'Ответ успешно отправлен!';
+        replyStatusMessage.style.color = 'green';
+        adminReplyMessage.value = ''; // Очищаем поле ввода
+        adminReplyAttachments.value = null; // Сбрасываем файлы
+
+        // Обновляем сообщения в модальном окне
+        // (можно либо запросить все заново, либо добавить новое сообщение локально)
+        // Простой вариант: запросить заново
+        openTicketModal(currentOpenTicketNumber);
+
+        // Обновить статус тикета в основном списке (если нужно немедленное отображение)
+        //fetchAdminTickets(); // Ваша функция для перезагрузки списка тикетов
+
+
+    } catch (error) {
+        console.error('Ошибка при отправке ответа:', error);
+        replyStatusMessage.textContent = `Ошибка: ${error.message}`;
+        replyStatusMessage.style.color = 'red';
+    } finally {
+        sendAdminReplyButton.disabled = false;
+    }
+};
+
+
+
+// --- Функции для работы с API и UI ---
+
+function adminLogout() {
+	localStorage.removeItem(TOKEN_KEY);
+	window.location.href = 'admin-login.html';
+}
+
+if(logoutAdminBtn) {
+
+	logoutAdminBtn.addEventListener('click', () => {
+		adminLogout();
+	});
+}
+
+// Получение токена администратора из localStorage
+function getAdminToken() {
+    return localStorage.getItem(TOKEN_KEY);
+}
+
+// Отображение сообщений об ошибках или успехе
+function displayMessage(message, isError = false, targetDiv = errorMessagesDiv) {
+    targetDiv.textContent = message;
+    targetDiv.style.color = isError ? 'red' : 'green'; // Или другой цвет для успеха
+    targetDiv.style.display = 'block';
+}
+
+// Очистка сообщений
+function clearMessage(targetDiv = errorMessagesDiv) {
+    targetDiv.textContent = '';
+    targetDiv.style.display = 'none';
+}
+
+// Показать/скрыть индикатор загрузки
+function showLoading(isLoading) {
+    if (loadingIndicator) {
+        loadingIndicator.style.display = isLoading ? 'block' : 'none';
+    }
+    if (applyFilterBtn) { // Блокируем кнопку фильтра во время загрузки
+        applyFilterBtn.disabled = isLoading;
+    }
+}
+
+// Загрузка списка пользователей для фильтра
+async function loadUsersForFilter() {
+    const token = getAdminToken();
+    if (!token || !userFilterSelect) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/userslist`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) {
+            console.error('Ошибка загрузки списка пользователей для фильтра. Статус:', response.status);
+            // Можно вывести сообщение пользователю, если это критично
+            return;
+        }
+        const data = await response.json();
+        if (data.users) {
+            // Очищаем предыдущие опции (кроме "Все пользователи")
+            while (userFilterSelect.options.length > 1) {
+                userFilterSelect.remove(1);
+            }
+            data.users.forEach(user => {
+                if (user.account_status === 'pending_approval') return;
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = `${user.fio} (${user.email || 'N/A'})`;
+                userFilterSelect.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Ошибка при получении списка пользователей:', error);
+        displayMessage('Не удалось загрузить список пользователей для фильтра.', true);
+    }
+}
+
+// Основная функция для получения и отображения заявок
+async function fetchAndDisplayTickets(status = 'open', page = 1, userId = 'all', company = '') {
+    clearMessage();
+    showLoading(true);
+
+    // Очистка перед новой загрузкой
+    if (ticketsTableBody) ticketsTableBody.innerHTML = '';
+    if (ticketsListDiv) ticketsListDiv.innerHTML = '';
+    if (paginationControls) paginationControls.innerHTML = '';
+
+    const token = getAdminToken();
+    if (!token) {
+        displayMessage('Ошибка авторизации: токен администратора не найден. Пожалуйста, войдите снова.', true);
+        showLoading(false);
+        // Пример перенаправления:
+        // if (window.location.pathname !== '/admin-login.html') { // Чтобы не было цикла
+        //     window.location.href = 'admin-login.html';
+        // }
+        return;
+    }
+
+    const params = new URLSearchParams({
+        status: status,
+        page: page,
+        limit: itemsPerPage,
+        sortBy: 'updated_at', // Можно сделать настраиваемым через UI
+        sortOrder: 'DESC'     // Можно сделать настраиваемым через UI
+    });
+
+    if (userId && userId !== 'all') {
+        params.append('userId', userId);
+    }
+
+    if (company && company.trim() !== '') {
+	params.append('company', company.trim());
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/tickets?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `Ошибка сервера: ${response.status}. Пожалуйста, проверьте консоль.` }));
+            if (response.status === 401 || response.status === 403) {
+                displayMessage(`Ошибка авторизации (${response.status}): ${errorData.message || 'Сессия истекла или недействительна. Пожалуйста, войдите снова.'}`, true);
+                localStorage.removeItem(TOKEN_KEY);
+                if (window.location.pathname !== '/admin-login.html') { window.location.href = 'admin-login.html'; }
+            } else {
+                displayMessage(`Ошибка загрузки заявок: ${errorData.message || response.statusText}`, true);
+            }
+            showLoading(false);
+            return;
+        }
+
+        const data = await response.json();
+        currentPage = data.pagination.currentPage;
+
+        if (data.tickets && data.tickets.length > 0) {
+            data.tickets.forEach(renderTicket); // Используем функцию для рендера каждой заявки
+        } else {
+            const noTicketsMessage = '<p style="text-align: center; padding: 20px; color: var(--secondary-text-color);">Заявки с указанными фильтрами не найдены.</p>';
+            if (ticketsListDiv) { // Если используем карточки
+                ticketsListDiv.innerHTML = noTicketsMessage;
+            } else if (ticketsTableBody) { // Если используем таблицу
+                ticketsTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 20px;">Заявки с указанными фильтрами не найдены.</td></tr>`;
+            }
+        }
+
+        renderPagination(data.pagination);
+
+    } catch (error) {
+        console.error('Полная ошибка при загрузке заявок:', error);
+        displayMessage('Произошла сетевая ошибка или непредвиденная ошибка при загрузке заявок. Пожалуйста, проверьте консоль.', true);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Функция для рендера одной заявки (адаптируйте под карточки или таблицу)
+function renderTicket(ticket) {
+    // ВАРИАНТ С КАРТОЧКАМИ (если ticketsListDiv существует)
+    if (ticketsListDiv) {
+        const card = document.createElement('div');
+        card.className = 'ticket-card';
+        card.onclick = () => openTicketModal(ticket.ticket_number);
+
+        let statusClass = ticket.status.toLowerCase().replace(/\s+/g, '_');
+        let statusText = ticket.status.toUpperCase(); // Или ваш локализованный текст
+
+        card.innerHTML = `
+            <div class="ticket-card-info">
+                <div class="ticket-card-title">
+                    Тема: ${escapeHtml(ticket.subject)}
+                    <span class="status-badge ${escapeHtml(statusClass)}">${escapeHtml(statusText)}</span>
+                </div>
+                <div class="ticket-card-summary">
+                    ${escapeHtml(ticket.first_message_snippet) || 'Нет описания'}
+                </div>
+                <div class="ticket-card-meta">
+                    <span>#${escapeHtml(ticket.ticket_number)}</span>
+                    <span>Пользователь: ${escapeHtml(ticket.user_fio) || 'N/A'}</span>
+                    <span>Обновлено: ${new Date(ticket.updated_at).toLocaleString()}</span>
+                </div>
+            </div>
+            <div class="ticket-card-action">
+                <span class="arrow">&rsaquo;</span>
+            </div>
+        `;
+        ticketsListDiv.appendChild(card);
+    }
+    // ВАРИАНТ С ТАБЛИЦЕЙ (если ticketsTableBody существует)
+    else if (ticketsTableBody) {
+        const row = ticketsTableBody.insertRow();
+        let statusClass = ticket.status.toLowerCase().replace(/\s+/g, '_');
+        let statusText = ticket.status.toUpperCase();
+
+        row.innerHTML = `
+            <td>${escapeHtml(ticket.ticket_number)}</td>
+            <td>${escapeHtml(ticket.subject)}</td>
+            <td><span class="status-badge ${escapeHtml(ticket.status.toLowerCase())}">
+            ${escapeHtml(adapterStatus(ticket.status))}
+            </span></td>
+            <td>${escapeHtml(ticket.user_fio) || 'N/A'}</td>
+            <td>${escapeHtml(ticket.user_email) || 'N/A'}</td>
+            <td>${escapeHtml(ticket.user_company) || 'N/A'}</td>
+            <td>${new Date(ticket.created_at).toLocaleString()}</td>
+            <td>${new Date(ticket.updated_at).toLocaleString()}</td>
+
+            <td><button class="action-button view-button" onclick="openTicketModal('${escapeHtml(ticket.ticket_number)}')">Просмотр</button></td>
+        `;
+         // Добавьте стили для .action-button и .view-button в CSS, если нужно
+    }
+}
+
+// Вспомогательная функция для экранирования HTML (простая версия)
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') return unsafe; // Если не строка, возвращаем как есть
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+// Функция для рендеринга пагинации
+function renderPagination(paginationData) {
+    if (!paginationControls || !paginationData || paginationData.totalPages <= 1) {
+        if(paginationControls) paginationControls.innerHTML = '';
+        return;
+    }
+    paginationControls.innerHTML = ''; // Очищаем перед рендером
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Назад';
+    prevButton.disabled = paginationData.currentPage === 1;
+    prevButton.addEventListener('click', () => {
+        if (paginationData.currentPage > 1) {
+            fetchAndDisplayTickets(statusFilterSelect.value, paginationData.currentPage - 1, userFilterSelect.value);
+        }
+    });
+    paginationControls.appendChild(prevButton);
+
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = ` Страница ${paginationData.currentPage} из ${paginationData.totalPages} `;
+    paginationControls.appendChild(pageInfo);
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Вперед';
+    nextButton.disabled = paginationData.currentPage === paginationData.totalPages;
+    nextButton.addEventListener('click', () => {
+        if (paginationData.currentPage < paginationData.totalPages) {
+            fetchAndDisplayTickets(statusFilterSelect.value, paginationData.currentPage + 1, userFilterSelect.value);
+        }
+    });
+    paginationControls.appendChild(nextButton);
+}
+
+//Перевод статусов из БД в русский
+function adapterStatus(status) {
+    if(!status) {
+        status = 'Статус не назначен';
+        console.error("Not status");
+        return;
+    }
+    if(status === "OPEN" || status === "open") status = 'Открыта';
+    if(status === "CLOSED" || status === "closed") status = 'Закрыта';
+    if(status === "WAITING_FOR_USER" || status === "waiting_for_user") status = 'Ожидает ответа';
+    return status;
+}
+
+// Функция для перехода к деталям заявки (заглушка)
+function viewTicketDetails(ticketNumber) {
+    alert(`Переход к деталям заявки #${ticketNumber}. v rabote`);
+    console.log(`Запрошен просмотр деталей для заявки: ${ticketNumber}`);
+    // Пример: window.location.href = `/admin/ticket-view.html?number=${ticketNumber}`;
+}
+
+// --- Инициализация и обработчики событий ---
+
+// Обработчик для кнопки "Применить фильтр"
+if (applyFilterBtn) {
+    applyFilterBtn.addEventListener('click', () => {
+        const selectedStatus = statusFilterSelect ? statusFilterSelect.value : 'all';
+        const selectedUserId = userFilterSelect ? userFilterSelect.value : 'all';
+	const selectedCompany = companyFilterInput ? companyFilterInput.value : '';
+        currentPage = 1; // Сбрасываем на первую страницу при новом фильтре
+        fetchAndDisplayTickets(selectedStatus, currentPage, selectedUserId, selectedCompany);
+    });
+}
+
+// Начальная загрузка данных при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    // Проверка наличия необходимых элементов DOM, прежде чем вешать обработчики или вызывать функции
+    if (!statusFilterSelect || !userFilterSelect || !applyFilterBtn || (!ticketsTableBody && !ticketsListDiv) || !paginationControls || !errorMessagesDiv || !loadingIndicator) {
+        console.error("Один или несколько ключевых элементов DOM не найдены. Проверьте HTML-разметку и ID элементов.");
+        displayMessage("Ошибка инициализации страницы: отсутствуют необходимые элементы.", true, document.body); // Отображаем ошибку в теле документа, если основной div ошибки не найден
+        return;
+    }
+
+    const token = getAdminToken();
+    if (!token) {
+        console.warn("Токен администратора не найден. Загрузка данных не будет выполнена.");
+        displayMessage("Для доступа к этой странице необходимо войти как администратор.", true);
+        // Если нужно, добавьте перенаправление на страницу входа:
+        // setTimeout(() => {
+        //    if (window.location.pathname !== '/admin-login.html') { window.location.href = 'admin-login.html'; }
+        // }, 2000);
+        return;
+    }
+
+    loadUsersForFilter(); // Загружаем пользователей для выпадающего списка
+
+    // Начальная загрузка тикетов (например, все открытые от всех пользователей)
+    const initialStatus = statusFilterSelect.value || 'open';
+    const initialUser = userFilterSelect.value || 'all';
+    const initialCompany = companyFilterInput ? companyFilterInput.value : '';
+    fetchAndDisplayTickets(initialStatus, currentPage, initialUser, initialCompany);
+});
+
+    </script>
+</body>
+</html>

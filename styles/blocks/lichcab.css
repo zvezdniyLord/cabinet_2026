@@ -1,0 +1,789 @@
+
+/*VIDEO.html*/
+.email-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 100%;
+}
+
+.video-block {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+    max-width: 100%;
+}
+
+.video-block:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.video-block-top {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    max-width: 100%;
+}
+
+.email-img-type {
+    margin-right: 0.75rem;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.email-type {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    flex: 1; /* Позволяет тексту растягиваться */
+}
+
+.btn-video-open {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-video-open:hover {
+    background-color: #eee;
+    color: #333;
+}
+
+
+.video-block-bottom {
+    padding: 1rem;
+    display: none; /* По умолчанию скрыта */
+}
+
+.video-watch-desc {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0 0 0.5rem 0;
+}
+
+.btn-watch {
+    background-color: #003a6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-watch:hover {
+    background-color: #002d55;
+}
+
+
+.video-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none; /* По умолчанию скрыто */
+}
+
+.video-popup.active {
+    display: flex;
+}
+
+.video {
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.video-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.video-close:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+/* END VIDEO */
+
+/*HISTORY.html*/
+#ticketsContainer {
+    background-color: transparent;
+    min-height: 200px;
+  }
+
+  #ticketsContainer > div:not(.loading) {
+    background-color: white; /* Белый фон */
+    padding: 1rem;
+    border: 1px solid #eee; /* Тонкая серая граница */
+    border-radius: 6px;      /* Слегка закруглённые углы */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Лёгкая тень */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 0.75rem; /* Отступ между карточками */
+  }
+
+  #ticketsContainer > div:not(.loading):hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  #ticketsContainer > div:not(.loading) p {
+    margin: 0.25rem 0;
+    color: #333;
+    line-height: 1.4;
+  }
+
+  #ticketsContainer > div:not(.loading) p:first-child {
+    font-weight: 500;
+    color: #003a6b;
+  }
+
+  #ticketsContainer > div:not(.loading) p:nth-child(2) {
+    font-size: 0.75rem;
+    color: #003a6b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  #ticketsContainer > div:not(.loading) p:nth-child(3) {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.25rem;
+  }
+
+  .text__products.right__block {
+    background-color: transparent;
+    padding: 2rem;
+    max-width: 100%;
+  }
+
+  .title__blue-fz30 {
+    color: #003a6b;
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: none;
+  }
+
+  .tickets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tickets-filter {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-btn:hover {
+    background-color: #f5f5f5;
+  }
+
+  .filter-btn.active {
+    background-color: #003a6b;
+    color: white;
+    border-color: #003a6b;
+  }
+
+  .create-ticket-btn {
+    background-color: #003a6b;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .create-ticket-btn:hover {
+    background-color: #002d55;
+  }
+
+  .plus-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  #ticketsContainer {
+    background-color: transparent;
+    min-height: 200px;
+  }
+
+  #ticketsContainer > div:not(.loading) {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  #ticketsContainer > div:not(.loading):hover {
+    background-color: #f9f9f9;
+  }
+
+  #ticketsContainer > div:not(.loading) p {
+    margin: 0.25rem 0;
+    color: #333;
+    line-height: 1.4;
+  }
+
+  #ticketsContainer > div:not(.loading) p:first-child {
+    font-weight: 500;
+    color: #003a6b;
+  }
+
+  #ticketsContainer > div:not(.loading) p:nth-child(1) {
+    font-weight: 500;
+    color: #003a6b;
+  }
+
+  #ticketsContainer > div:not(.loading) p:nth-child(2) {
+    font-size: 0.75rem;
+    color: #003a6b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  #ticketsContainer > div:not(.loading) p:nth-child(3) {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.25rem;
+  }
+
+  .loading {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-header h3 {
+    color: #003a6b;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .close-modal {
+    font-size: 2rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .close-modal:hover {
+    color: #333;
+  }
+
+  .ticket-form .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .ticket-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #003a6b;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .ticket-form input,
+  .ticket-form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+  }
+
+  .ticket-form input:focus,
+  .ticket-form textarea:focus {
+    outline: none;
+    border-color: #003a6b;
+    box-shadow: 0 0 0 2px rgba(0, 58, 107, 0.1);
+  }
+
+  .ticket-form small {
+    display: block;
+    color: #888;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .selected-files-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .selected-file {
+    background-color: #f0f0f0;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .selected-file .remove-file {
+    color: #888;
+    cursor: pointer;
+    font-size: 0.75rem;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .submit-btn,
+  .cancel-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .submit-btn {
+    background-color: #003a6b;
+    color: white;
+  }
+
+  .submit-btn:hover {
+    background-color: #002d55;
+  }
+
+  .cancel-btn {
+    background-color: #e0e0e0;
+    color: #333;
+  }
+
+  .cancel-btn:hover {
+    background-color: #ccc;
+  }
+
+  .ticket-view-content {
+    max-width: 600px;
+  }
+
+  .ticket-status-container {
+    margin-bottom: 1rem;
+  }
+
+  .ticket-status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ticket-status-badge.open {
+    background-color: #e0f7fa;
+    color: #00838f;
+  }
+
+  .ticket-status-badge.closed {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+
+  .ticket-status-badge.pending {
+    background-color: #fff8e1;
+    color: #ff8f00;
+  }
+
+  .ticket-details-view {
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .ticket-details-view p {
+    margin: 0.25rem 0;
+    color: #333;
+  }
+
+  .ticket-messages-container {
+    background-color: #fafafa;
+    padding: 1rem;
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+
+  .message-item {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    background-color: white;
+    border: 1px solid #eee;
+  }
+
+  .message-item .message-author {
+    font-weight: 600;
+    color: #003a6b;
+    margin-bottom: 0.25rem;
+  }
+
+  .message-item .message-text {
+    color: #333;
+    white-space: pre-line;
+  }
+
+  .message-item .message-date {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.25rem;
+  }
+
+  .reply-form-container {
+    margin-top: 1.5rem;
+  }
+
+  .reply-form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .reply-form .form-group {
+    margin-top: 0.5rem;
+  }
+
+  .ticket-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-danger {
+    background-color: #c62828;
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background-color: #b71c1c;
+  }
+
+  .btn-success {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .btn-success:hover {
+    background-color: #388e3c;
+  }
+
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.875rem;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .notification.show {
+    opacity: 1;
+  }
+
+  .notification.success {
+    background-color: #4caf50;
+  }
+
+  .notification.error {
+    background-color: #c62828;
+  }
+
+  .notification.hidden {
+    display: none;
+  }
+/* END HISTORY */
+
+/*LK.html*/
+#accountForm {
+    background-color: transparent; /* Убираем фон */
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+
+  #accountForm .form-title {
+    color: #003a6b;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: none;
+  }
+
+  #accountForm p {
+    color: #003a6b;
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  #accountForm .form-account-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #accountForm .form-account-input:focus {
+    outline: none;
+    border-color: #003a6b;
+    box-shadow: 0 0 0 2px rgba(0, 58, 107, 0.1);
+  }
+
+  .btn__submit-main {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+
+  .btn__product-submit {
+    background-color: #003a6b;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn__product-submit:hover {
+    background-color: #002d55;
+  }
+
+  @media (max-width: 768px) {
+    #accountForm {
+      padding: 1.5rem 0.5rem;
+    }
+
+    .btn__product-submit {
+      width: 100%;
+      text-align: center;
+    }
+  }
+/* END LK */
+
+/*DOCUMENTS.html*/
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* 100% высоты вьюпорта (окна браузера) */
+    margin: 0; /* Убираем стандартные отступы body, если они есть */
+    padding: 0;
+  }
+
+  .header,
+  .container {
+    flex: 0 1 auto; /* Не растягиваем по высоте по умолчанию */
+  }
+
+  .container {
+    flex: 1 0 auto; /* Основной контент должен занять всё свободное место */
+    /* padding и другие стили оставляем без изменений */
+  }
+
+  .document-list {
+      list-style: none; /* Убираем маркеры списка */
+      padding: 0;
+      margin: 0;
+  }
+
+  .document-item {
+      background-color: white; /* Белый фон карточки */
+      border: 1px solid #e0e0e0; /* Тонкая серая граница */
+      border-radius: 8px; /* Закругленные углы */
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Легкая тень */
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+  }
+
+  .document-item:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+  }
+
+  .document-info {
+      flex: 1; /* Занимает всю доступную ширину */
+      min-width: 0; /* Позволяет тексту переноситься, если нужно */
+  }
+
+  .title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+  }
+
+  .meta {
+      font-size: 0.875rem;
+      color: #666;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap; /* Перенос метаданных на новую строку при необходимости */
+  }
+
+  .meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+  }
+
+  .download-btn {
+      background-color: #003a6b; /* Темно-синий цвет как на скриншоте */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      white-space: nowrap; /* Не переносим текст кнопки */
+  }
+
+  .download-btn:hover {
+      background-color: #002d55; /* Более темный синий при наведении */
+  }
+/* END DOCUMENTS */
+

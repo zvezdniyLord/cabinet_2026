@@ -1,0 +1,113 @@
+.reg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.reg__block {
+    width: 1000px;
+    height: 500px;
+    border-radius: 10px;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.25);
+    background-color: var(--color-auth-bg-blue);
+}
+
+.reg__title {
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    color: var(--color-title-blue);
+    text-align: center;
+}
+
+.reg__subtitle {
+    font-size: 0.9rem;
+    line-height: 0.9rem;
+    color: var(--color-text-grey);
+    text-align: center;
+    margin-top: 1rem;
+    letter-spacing: 0.1em;
+}
+
+.reg__form {
+    width: 715px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+}
+
+.reg__input {
+    width: 320px;
+    height: 50px;
+    background: #FFFFFF;
+    box-shadow: 0px 5px 5px rgba(0, 57, 104, 0.2);
+    border-radius: 5px;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    padding: 1rem 0 1rem 1.1rem;
+}
+
+.reg__submit-block {
+    display: flex;
+    margin-bottom: 2rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.reg__form-fx {
+    max-width: 720px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form__text-reg {
+    margin-left: 1rem;
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 736px) {
+    .reg {
+        min-height: 850px;
+    }
+    
+    .reg__block {
+        max-width: 100%;
+        height: 100%;
+    }
+
+    .reg__form {
+        max-width: 100%;
+        align-items: center;
+    }
+
+    .reg__form-fx {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn__product-submit {
+        margin-bottom: 2rem;
+    }
+
+    .form__text {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+
+    .reg__input {
+        margin-left: 0;
+    }
+
+    .reg__submit-block {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}

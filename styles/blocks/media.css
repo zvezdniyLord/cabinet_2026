@@ -1,0 +1,388 @@
+/* === От 320px до 425px — маленькие смартфоны === */
+@media (min-width: 320px) and (max-width: 425px) {
+  .mt-84 {
+    margin-top: 0 !important;
+  }
+  .section {
+    padding: 10px;
+  }
+
+  .form__questionnaireOne,
+  .form__questionnaireTwo,
+  .form__questionnaireThree,
+  .form__questionnaireFour,
+  .form__questionnaireFive,
+  .form__questionnaireSix,
+  .form__questionnaireSeven,
+  .form__questionnaireEight,
+  .form__questionnaireNine,
+  .form__questionnaireThreeAds {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%;
+    box-shadow: none;
+    margin-top: 0;
+    background-color: transparent;
+  }
+
+  .form__question,
+  .educ__curse {
+    margin-top: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 0 10px;
+  }
+
+  .form__question > label {
+    width: 100%;
+  }
+
+  .form__questionnaire-title {
+    font-size: 20px;
+    padding-top: 30px;
+  }
+
+  .form__questionnaire-subtitle {
+    font-size: 14px;
+  }
+
+  .form__questionnaire-scale {
+    width: 100%;
+    height: 15px;
+    border-radius: 10px;
+  }
+
+  .form__input-name {
+    font-size: 14px;
+  }
+
+  .form__input-big,
+  .form__input-small,
+  .form__select {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+
+  .form__input-small {
+    margin-top: 10px;
+  }
+
+  .form__input-big {
+    height: 40px;
+  }
+  .form__inputs-block {
+    flex-direction: column;
+  }
+
+  .form__inputs-right {
+    margin-top: 25px;
+  }
+
+  input[type="checkbox"] {
+    width: 35px;
+    height: 35px;
+  }
+
+  .delimiter {
+    width: 100%;
+    height: 1px;
+    margin: 20px 0;
+  }
+
+  .form__text {
+    font-size: 13px;
+  }
+
+  .form__buttons-bot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn__questionnaire-back,
+  .btn__questionnaire-forward,
+  .btn__questionnaire-clean,
+  .btn__questionnaire-send {
+    width: 100%;
+    margin: 5px 0;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .form__checkbox + .form__checkbox-text::before {
+    width: 25px;
+    height: 25px;
+  }
+
+  .form__select {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .form__systems__check {
+    min-width: calc(-620px);
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .system {
+    width: 280px;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .system__choose__img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .local__text__block {
+    margin-bottom: 5px;
+  }
+
+  .form__input-name-inside {
+    font-size: 13px;
+    margin-left: 0;
+  }
+
+
+
+  .header__logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .header__title {
+    font-size: 18px;
+  }
+  .delimiter {
+    width: 100%;
+    max-width: 100%;
+    height: 2px;
+    margin: 20px 0;
+    background-color: var(--color-auth-bg-blue);
+  }
+}
+
+/* === От 425px до 768px — большие смартфоны и планшеты в портрете === */
+@media (min-width: 425px) and (max-width: 768px) {
+  .form__questionnaireOne,
+  .form__questionnaireTwo,
+  .form__questionnaireThree,
+  .form__questionnaireFour,
+  .form__questionnaireFive,
+  .form__questionnaireSix,
+  .form__questionnaireSeven,
+  .form__questionnaireEight,
+  .form__questionnaireNine,
+  .form__questionnaireThreeAds {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 90%;
+    margin-top: 0;
+  }
+
+  .form__input-name {
+    font-size: 15px;
+  }
+
+  .form__input-big,
+  .form__input-small,
+  .form__select {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+
+  .form__input-small {
+    margin-top: 10px;
+  }
+
+  .form__input-big {
+    height: 40px;
+  }
+  .form__question {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 0 15px;
+  }
+
+  .form__question > label {
+    width: 100%;
+  }
+
+  .form__questionnaire-title {
+    font-size: 22px;
+  }
+
+  .form__questionnaire-subtitle {
+    font-size: 15px;
+  }
+
+  .form__questionnaire-scale {
+    height: 20px;
+  }
+
+  .form__checkbox + .form__checkbox-text::before {
+    width: 30px;
+    height: 30px;
+  }
+
+  .btn__questionnaire-back,
+  .btn__questionnaire-forward,
+  .btn__questionnaire-clean,
+  .btn__questionnaire-send {
+    font-size: 15px;
+  }
+
+  .form__select {
+    font-size: 15px;
+  }
+
+  .form__systems__check {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .system {
+    padding: 10px;
+    text-align: center;
+  }
+
+  .system__choose__img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .form__input-name-inside {
+    font-size: 14px;
+  }
+
+  .educ__curse {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .delimiter {
+    width: 100%;
+    max-width: 100%;
+    height: 2px;
+    margin: 20px 0;
+    background-color: var(--color-auth-bg-blue);
+  }
+}
+
+/* === От 768px до 1024px — планшеты в ландшафте === */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .form__questionnaireOne,
+  .form__questionnaireTwo,
+  .form__questionnaireThree,
+  .form__questionnaireFour,
+  .form__questionnaireFive,
+  .form__questionnaireSix,
+  .form__questionnaireSeven,
+  .form__questionnaireEight,
+  .form__questionnaireNine,
+  .form__questionnaireThreeAds {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%;
+  }
+
+  .form__input-name {
+    font-size: 16px;
+  }
+
+  .form__input-big,
+  .form__input-small,
+  .form__select {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+
+  .form__input-small {
+    margin-top: 10px;
+  }
+
+  .form__input-big {
+    height: 40px;
+  }
+
+  .form__question {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 0 20px;
+  }
+
+  .form__question > label {
+    width: 100%;
+  }
+
+  .form__questionnaire-title {
+    font-size: 24px;
+  }
+
+  .form__questionnaire-subtitle {
+    font-size: 16px;
+  }
+
+  .form__checkbox + .form__checkbox-text::before {
+    width: 35px;
+    height: 35px;
+  }
+
+  .btn__questionnaire-back,
+  .btn__questionnaire-forward,
+  .btn__questionnaire-clean,
+  .btn__questionnaire-send {
+    font-size: 16px;
+  }
+
+  .form__select {
+    font-size: 16px;
+  }
+
+  .form__systems__check {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+  }
+
+  .system {
+    width: calc(33% - 15px);
+    padding: 15px;
+    text-align: center;
+  }
+
+  .system__choose__img {
+    width: 120px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .form__input-name-inside {
+    font-size: 15px;
+  }
+  .delimiter {
+    width: 100%;
+    max-width: 100%;
+    height: 2px;
+    margin: 20px 0;
+    background-color: var(--color-auth-bg-blue);
+  }
+}

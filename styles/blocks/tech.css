@@ -1,0 +1,1852 @@
+.auth-tech {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.form-auth-tech {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.form-auth-title {
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.video-card video {
+  max-height: 50%;
+}
+
+/* Базовые стили для таблицы */
+.users-table {
+  width: 100%; /* Полная ширина */
+  border-collapse: collapse; /* Убираем двойные границы */
+  background-color: #ffffff; /* Белый фон */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень для "карточного" вида */
+  border-radius: 8px; /* Закругленные углы */
+  overflow: hidden; /* Чтобы углы не обрезались */
+  margin: 20px 0; /* Отступы сверху/снизу */
+  font-family: Arial, sans-serif; /* Шрифт */
+  font-size: 14px; /* Размер текста */
+}
+
+/* Заголовки (th) */
+.users-table th {
+  background-color: #f8f9fa; /* Светло-серый фон, как в желаемом */
+  padding: 12px 16px; /* Больше отступов для красоты */
+  text-align: left; /* Выравнивание слева */
+  border-bottom: 2px solid #ddd; /* Толстая нижняя граница */
+  font-weight: bold; /* Жирный текст */
+  color: #333; /* Темный цвет текста */
+}
+
+/* Ячейки (td) */
+.users-table td {
+  padding: 12px 16px; /* Отступы */
+  border-bottom: 1px solid #eee; /* Тонкая граница */
+  text-align: left; /* Выравнивание слева */
+  color: #555; /* Цвет текста */
+}
+
+/* Чередование строк для красоты */
+.users-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Светло-серый для четных строк */
+}
+
+/* Hover-эффект на строки */
+.users-table tbody tr:hover {
+  background-color: #f1f1f1; /* Светлый hover */
+  transition: background-color 0.2s ease; /* Плавный переход */
+}
+
+/* Кнопки действий */
+.users-table .actions {
+  display: flex; /* Выравниваем кнопки в ряд */
+  gap: 8px; /* Отступ между кнопками */
+}
+
+.btn {
+  padding: 6px 12px; /* Размер */
+  border: none; /* Без границы */
+  border-radius: 4px; /* Закругленные углы, как в желаемом */
+  cursor: pointer; /* Курсор руки */
+  font-size: 13px; /* Размер текста */
+  transition: background-color 0.2s ease; /* Плавный hover */
+}
+
+.btn-success {
+  background-color: #28a745; /* Зеленый, как в вашем скрине */
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838; /* Темнее на hover */
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Красный */
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* Темнее на hover */
+}
+
+/* Если нужны синие кнопки (как в желаемом для "Подробнее") */
+.btn-primary {
+  background-color: #007bff; /* Синий */
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+}
+
+/* Адаптивность: обертка с прокруткой */
+.table-responsive {
+  overflow-x: auto; /* Горизонтальная прокрутка на мобильных */
+  margin: 0 auto; /* Центрирование */
+}
+
+/* Media query для мобильных (экраны меньше 768px) */
+@media (max-width: 768px) {
+  .users-table {
+    font-size: 12px; /* Меньше текст */
+  }
+
+  .users-table th, .users-table td {
+    padding: 8px; /* Меньше отступов */
+  }
+
+  /* Опционально: стековая таблица (столбцы в строки) */
+  .users-table thead {
+    display: none; /* Скрываем заголовки */
+  }
+
+  .users-table tr {
+    display: block; /* Каждая строка как блок */
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .users-table td {
+    display: block; /* Ячейки как блоки */
+    text-align: right; /* Выравнивание для меток */
+    border: none;
+    position: relative;
+    padding-left: 50%; /* Пространство для метки */
+  }
+
+  .users-table td::before {
+    content: attr(data-label); /* Добавляем метку из data-label */
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+}
+
+/* Loading сообщение (из вашего HTML) */
+#loadingMessage {
+  text-align: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin: 20px 0;
+  color: #63d67e;
+  margin-top: 1rem;
+}
+
+.tech-pwd-input {
+    height: 35px;
+    display: flex;
+    width: 200px;
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.tech-pwd-input::placeholder {
+    text-align: center;
+}
+
+.btn-auth-tech {
+    width: 150px;
+    height: 35px;
+    background-color: var(--color-black-blue);
+    color: #fff;
+    text-transform: uppercase;
+}
+
+:root {
+    --main-bg-color: #f4f7f6; /* Немного другой оттенок серого, более мягкий */
+    --sidebar-bg-color: #ffffff;
+    --sidebar-active-bg-color: #3D5A78; /* Чуть приглушенный синий, ближе к скриншоту */
+    --sidebar-active-text-color: #ffffff;
+    --sidebar-text-color: #4a5568; /* Темно-серый для текста в сайдбаре */
+    --sidebar-hover-bg-color: #e2e8f0;
+    --sidebar-border-color: #e2e8f0; /* Цвет границы для кнопок сайдбара */
+
+    --content-bg-color: #ffffff;
+    --card-bg-color: #ffffff;
+    --card-border-color: #e7eaec;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); /* Более выраженная, но мягкая тень */
+    --card-hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+
+    --primary-text-color: #2d3748; /* Более темный основной текст */
+    --secondary-text-color: #718096; /* Приглушенный серый для вторичного текста */
+
+    --accent-color-open: #3182ce; /* Ярко-синий для "открыта" */
+    --accent-color-open-bg: #ebf8ff;
+    --accent-color-closed: #c53030; /* Красный для "закрыта" */
+    --accent-color-closed-bg: #fff5f5;
+    --accent-color-waiting: #dd6b20; /* Оранжевый для "ожидает" */
+    --accent-color-waiting-bg: #fffaf0;
+    /* Добавьте другие акцентные цвета для статусов */
+
+    --header-text-color: #2c5282; /* Темно-синий для заголовка H1 */
+    --button-primary-bg: var(--sidebar-active-bg-color);
+    --button-primary-text: #ffffff;
+    --button-hover-bg: #2c4a66; /* Затемненный вариант для ховера */
+
+    --table-header-bg: #f7fafc;
+    --table-border-color: #e2e8f0;
+
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+
+    --transition-speed: 0.3s;
+    --transition-timing: ease-in-out;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box; /* Улучшает управление размерами */
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    background-color: var(--main-bg-color);
+    color: var(--primary-text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased; /* Улучшение рендеринга шрифтов */
+    -moz-osx-font-smoothing: grayscale;
+}
+
+td > button {
+    background-color: var(--button-hover-bg);
+    transform: translateY(-1px);
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: #3a7bc8;
+    cursor: pointer;
+    transition: border-color var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
+}
+
+.admin-layout {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg-color);
+    padding: 25px 20px;
+    box-shadow: 3px 0 10px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    transition: width var(--transition-speed) var(--transition-timing); /* Анимация ширины (если планируется сворачивание) */
+}
+
+.sidebar-button {
+    display: flex; /* Для выравнивания иконки и текста, если будут иконки */
+    align-items: center;
+    width: 100%;
+    padding: 13px 18px;
+    margin-bottom: 10px;
+    background-color: transparent; /* Прозрачный фон по умолчанию */
+    color: var(--sidebar-text-color);
+    border: none; /* Убираем рамку, если не нужна, или оставляем --sidebar-border-color */
+    border-radius: var(--border-radius-md);
+    text-align: left;
+    font-size: 15px;
+    font-weight: 500; /* Немного жирнее текст */
+    cursor: pointer;
+    transition: background-color var(--transition-speed) var(--transition-timing),
+                color var(--transition-speed) var(--transition-timing),
+                transform var(--transition-speed) var(--transition-timing);
+}
+
+.sidebar-button:hover {
+    background-color: var(--sidebar-hover-bg-color);
+    color: var(--primary-text-color); /* Можно сделать текст темнее при ховере */
+    transform: translateX(3px); /* Небольшой сдвиг при ховере */
+}
+
+.sidebar-button.active {
+    background-color: var(--sidebar-active-bg-color);
+    color: var(--sidebar-active-text-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень для активной кнопки */
+    transform: translateX(0); /* Убираем сдвиг, если он был при ховере */
+}
+.sidebar-button.active:hover {
+    background-color: var(--sidebar-active-bg-color); /* Чтобы не менялся цвет при ховере на активной */
+}
+
+
+.main-content {
+    flex-grow: 1;
+    padding: 35px 40px; /* Увеличим отступы */
+    background-color: var(--main-bg-color);
+    overflow-y: auto;
+}
+
+.main-content h1 {
+    color: var(--header-text-color);
+    font-size: 30px; /* Чуть больше */
+    margin-bottom: 30px;
+    font-weight: 700; /* Жирнее */
+}
+
+.filters {
+    background-color: var(--card-bg-color);
+    padding: 20px 25px;
+    border-radius: var(--border-radius-lg); /* Более скругленные углы */
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid var(--card-border-color); /* Добавим тонкую границу */
+}
+
+.filters label {
+    font-weight: 600;
+    color: var(--primary-text-color);
+}
+
+.filters select, .filters button {
+    padding: 10px 15px; /* Увеличим паддинг */
+    border: 1px solid var(--sidebar-border-color);
+    border-radius: var(--border-radius-md);
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
+}
+.filters select:focus, .filters button:focus {
+    outline: none;
+    border-color: var(--sidebar-active-bg-color);
+    box-shadow: 0 0 0 2px rgba(61, 90, 120, 0.2); /* Обводка при фокусе */
+}
+
+
+.filters select {
+    min-width: 180px;
+}
+
+.filters button {
+    background-color: #3a7bc8;
+    color: var(--button-primary-text);
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+    transition: background-color var(--transition-speed) var(--transition-timing), transform 0.1s ease-out;
+}
+
+.tickets-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: #f5f7fa;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tickets-list {
+    display: grid;
+    gap: 25px;
+}
+
+.ticket-card {
+    background-color: var(--card-bg-color);
+    border: 1px solid transparent; /* Убираем видимую границу, тень будет основной */
+    border-radius: var(--border-radius-lg);
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow var(--transition-speed) var(--transition-timing),
+                transform var(--transition-speed) var(--transition-timing),
+                border-color var(--transition-speed) var(--transition-timing);
+    position: relative; /* Для псевдо-элементов, если понадобятся */
+}
+
+.ticket-card:hover {
+    box-shadow: var(--card-hover-shadow);
+    transform: translateY(-4px); /* Более заметный подъем */
+    border-color: var(--sidebar-active-bg-color); /* Подсветка рамки при ховере */
+}
+
+.ticket-card-info {
+    flex-grow: 1;
+    padding-right: 15px; /* Отступ от стрелки */
+}
+
+.ticket-card-title {
+    font-size: 17px; /* Чуть крупнее */
+    font-weight: 600;
+    color: var(--primary-text-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Расстояние между темой и статусом */
+}
+
+.ticket-card-title .status-badge {
+    font-size: 10px; /* Чуть меньше для компактности */
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: var(--border-radius-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.5px; /* Небольшой разряд */
+    line-height: 1; /* Убираем лишнюю высоту */
+}
+
+.status-badge.open {
+    background-color: var(--accent-color-open-bg);
+    color: var(--accent-color-open);
+    border: 1px solid var(--accent-color-open); /* Тонкая рамка в цвет текста */
+}
+.status-badge.closed {
+    background-color: var(--accent-color-closed-bg);
+    color: var(--accent-color-closed);
+    border: 1px solid var(--accent-color-closed);
+}
+.status-badge.waiting_for_user {
+    background-color: var(--accent-color-waiting-bg);
+    color: var(--accent-color-waiting);
+    border: 1px solid var(--accent-color-waiting);
+}
+/* Добавьте другие статусы */
+
+
+.ticket-card-summary {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+    margin-bottom: 10px;
+    line-height: 1.5; /* Улучшение читаемости */
+    /* Для многострочного обрезания текста, если нужно: */
+    /* display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden; */
+}
+.ticket-card-meta {
+    font-size: 12px;
+    color: #888;
+    display: flex; /* Для лучшего выравнивания */
+    gap: 15px; /* Расстояние между мета-данными */
+}
+
+
+.ticket-card-action .arrow {
+    font-size: 24px; /* Крупнее стрелка */
+    color: var(--secondary-text-color);
+    transition: transform var(--transition-speed) var(--transition-timing);
+}
+.ticket-card:hover .ticket-card-action .arrow {
+    transform: translateX(3px); /* Сдвиг стрелки при ховере на карточку */
+    color: var(--sidebar-active-bg-color); /* Меняем цвет стрелки */
+}
+
+/* Стили для таблицы (если используется) */
+/* ... оставьте или доработайте стили таблицы по аналогии с карточками ... */
+table {
+    width: 100%;
+    border-collapse: separate; /* Используем separate для border-spacing и border-radius на ячейках */
+    border-spacing: 0;
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--table-border-color);
+}
+
+th, td {
+    padding: 14px 18px; /* Увеличим паддинг */
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid var(--table-border-color);
+}
+th:last-child, td:last-child {
+    border-right: none;
+}
+tr:last-child td {
+    border-bottom: none;
+}
+
+th {
+    background-color: var(--table-header-bg);
+    font-weight: 600;
+    color: var(--secondary-text-color);
+    text-transform: uppercase;
+    font-size: 11px; /* Мельче заголовки таблицы */
+    letter-spacing: 0.5px;
+}
+
+tbody tr {
+    transition: background-color var(--transition-speed) var(--transition-timing);
+}
+tbody tr:hover {
+    background-color: #f1f5f9; /* Более заметный ховер для строк таблицы */
+}
+
+td .status-badge {
+    font-size: 10px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: var(--border-radius-lg);
+    text-transform: uppercase;
+    display: inline-block;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination button, .pagination span {
+    margin: 0 4px; /* Чуть меньше отступы */
+    padding: 9px 14px;
+    border: 1px solid var(--sidebar-border-color);
+    border-radius: var(--border-radius-md);
+    background-color: #fff;
+    color: var(--primary-text-color);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color var(--transition-speed) var(--transition-timing),
+                color var(--transition-speed) var(--transition-timing),
+                box-shadow var(--transition-speed) var(--transition-timing),
+                transform 0.1s ease-out;
+}
+.pagination button:hover:not(:disabled) {
+    background-color: var(--sidebar-hover-bg-color);
+    border-color: #cbd5e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.pagination button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e9ecef;
+}
+.pagination span {
+    border: none;
+    background-color: transparent;
+    padding: 9px 8px;
+    cursor: default;
+    font-weight: normal;
+}
+
+
+.loading, .error {
+    padding: 18px;
+    text-align: center;
+    border-radius: var(--border-radius-md);
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+.loading {
+    background-color: #e2e8f0;
+    color: var(--secondary-text-color);
+}
+.error {
+    background-color: var(--accent-color-closed-bg);
+    color: var(--accent-color-closed);
+    border: 1px solid var(--accent-color-closed);
+}
+
+
+.sidebar-button.danger-button {
+	background-color: #f8d7da;
+	color: #721c24;
+	border-color: #f5c6cb;
+	width: 10%;
+	margin-bottom: 0;
+    }
+
+/* 1. Контейнер шапки ------------------------------------------------------- */
+.admin-ticket-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  /* Красота 😊 */
+  padding:1.1rem 2rem;
+  background:#fafdfd;                 /* лёгкий офф-white */
+  border-bottom:1px solid #e5ecef;
+  box-shadow:0 2px 4px rgba(0,0,0,.04);
+  gap:1.5rem;                         /* небольшие «проплешины» */
+  font-family:"Inter", "Segoe UI", sans-serif;   /* приятный читаемый */
+}
+
+/* 2. Заголовок ------------------------------------------------------------ */
+.admin-ticket-header h1{
+  margin:0;
+  font-size:1.45rem;
+  font-weight:600;
+  color:#1d2433;
+  white-space:nowrap;
+}
+
+/* 3. Навигационные ссылки -------------------------------------------------- */
+.admin-link{
+  display:inline-block;
+  margin-left:.75rem;
+  padding:.35rem .15rem;
+
+  color:#475569;                      /* slate-серый */
+  text-decoration:none;
+  font-weight:500;
+
+  /* плавные подсказки пользователю */
+  border-bottom:2px solid transparent;
+  transition:color .2s ease,border-color .2s ease;
+}
+.admin-link:first-of-type{margin-left:0;} /* у первой ссылки отступ не нужен */
+
+.admin-link:hover,
+.admin-link:focus{
+  color:#0d6efd;                      /* синий акцент */
+  border-color:#0d6efd;
+}
+
+.sidebar-button.danger-button,
+#logoutAdminBtn{
+  cursor:pointer;
+  padding:.55rem 1.2rem;
+  font-size:.9rem;
+  font-weight:600;
+  max-width: 120px;
+  color:#b72d2d;
+  background:#ffe5e5;
+  border:1px solid #ffc6c6;
+  border-radius:8px;
+  text-align: center;
+  transition:background .2s ease,color .2s ease,box-shadow .2s ease;
+}
+
+.sidebar-button.danger-button:hover,
+.sidebar-button.danger-button:focus,
+#logoutAdminBtn:hover,
+#logoutAdminBtn:focus{
+  background:#ff4d4d;
+  color:#fff;
+  box-shadow:0 0 0 3px rgba(255,77,77,.25);
+}
+
+.btn-admin-filter {
+  background-color: #3a7bc8;
+  max-width: 220px;
+}
+
+.form-auth-tech{
+  width:100%;
+  max-width:420px;
+  padding:2.3rem 3rem;
+  box-sizing:border-box;
+  background:rgba(255,255,255,.9);
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(50,60,70,.08);
+  backdrop-filter:blur(8px);
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1.4rem;
+}
+
+.form-auth-title{
+  text-align:center;
+  font-size:1.1rem;
+  font-weight:600;
+  color:#1d2433;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+
+.tech-pwd-input{
+  padding:.85rem 1.15rem;
+  font-size:1rem;
+  border:1px solid #c7d0d8;
+  border-radius:8px;
+  outline:none;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.tech-pwd-input::placeholder{
+  color:#9aa4ad;
+}
+
+.tech-pwd-input:focus{
+  border-color:#0d6efd;
+  box-shadow:0 0 0 3px rgba(13,110,253,.25);
+}
+
+/*--- Базовый стиль блока сообщения ------------------------------------*/
+#errorMessageDiv {
+  opacity: 0;                     /* скрыт по умолчанию */
+  transform: translateY(-10px);   /* немного приподнят */
+  transition:
+      opacity 0.35s ease-out,
+      transform 0.35s ease-out,
+      color 0.2s ease;            /* плавный переход цвета */
+  display: none;                  /* чтобы элемент не занимал место, пока не нужен */
+}
+
+/*--- Состояния (показываем) ----------------------------------------*/
+#errorMessageDiv.show {
+  display: block;                 /* снова появляется в потоке */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/*--- Цвета -----------------------------------------------------------*/
+#errorMessageDiv.error   { color: #e53935; }   /* красный */
+#errorMessageDiv.success { color: #43a047; }   /* зелёный */
+
+.btn-auth-tech{
+  cursor:pointer;
+  padding:.9rem 1.15rem;
+  font-size:1rem;
+  font-weight:600;
+  color:#fff;
+  background:#0d6efd;
+  border:none;
+  border-radius:8px;
+  text-transform:uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing:.7px;
+  transition:background .2s ease, box-shadow .2s ease;
+}
+
+.btn-auth-tech:hover,
+.btn-auth-tech:focus{
+  background:#0a2b4c;
+  box-shadow:0 6px 16px rgba(4,25,44,.28);
+}
+
+.btn-auth-tech:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
+@media(max-width:420px){
+  .form-auth-tech{
+    padding:1.8rem 1.6rem;
+  }
+}
+
+@media(max-width:640px){
+  .admin-ticket-header{
+    flex-wrap:wrap;
+  }
+  .admin-ticket-header h1{
+    flex:1 1 100%;
+    margin-bottom:.6rem;
+  }
+  .admin-link{
+    margin-left:0;
+    margin-right:1rem;
+  }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 220px;
+    }
+     .main-content {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+    .sidebar-button {
+        padding: 12px 15px;
+    }
+    .main-content {
+        padding: 20px 15px;
+    }
+    .main-content h1 {
+        font-size: 24px;
+    }
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+    }
+    .filters select, .filters button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .ticket-card {
+        padding: 15px;
+    }
+    .ticket-card-title {
+        font-size: 16px;
+    }
+}
+
+.tickets-container {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px; /* Расстояние между заявками */
+}
+
+#closeTicketBtn {
+    height: 50px;
+    width: 125px;
+    background-color: #dc3545;
+    color: white;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+    padding: 0 0 0.5rem 0;
+}
+
+#closeTicketBtn:hover {
+    background-color: #b22231;
+}
+
+.ticket-details-view > p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ticket-item-new {
+    background-color: #f7f8fa; /* Светло-серый фон, как на примере */
+    border-radius: 8px;
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column; /* Основные элементы друг под другом */
+    gap: 8px; /* Расстояние между элементами внутри заявки */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid #e8e9ec; /* Тонкая рамка */
+    position: relative; /* Для стрелки */
+    width: 100%;
+    max-width: 100%;
+}
+
+.ticket-item-new:hover {
+    background-color: #eff1f5; /* Чуть темнее при наведении */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.ticket-main-info {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Расстояние между номером заявки и статусом */
+}
+
+.ticket-id-new {
+    font-family: 'Inter', sans-serif; /* Пример шрифта, замените на свой */
+    font-size: 16px;
+    font-weight: 600; /* Полужирный */
+    color: #595f69; /* Темно-серый, почти черный */
+}
+
+/* Стили для значка статуса */
+.ticket-status-badge {
+    padding: 3px 10px;
+    border-radius: 12px; /* Более овальная форма */
+    font-size: 11px;
+    font-weight: 600; /* Полужирный */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+}
+
+.status-badge-open,
+.status-badge-waiting { /* Объединил стили для "Открыта" и "Ожидает ответа" */
+    background-color: #e6f7ff; /* Светло-голубой фон */
+    color: #1890ff;       /* Синий текст */
+    /* border: 1px solid #91d5ff; /* Можно добавить рамку, если нужно */
+}
+
+.status-badge-closed {
+    background-color: #f0f2f5; /* Светло-серый фон */
+    color: #8c98a8;       /* Серый текст */
+    /* border: 1px solid #d9d9d9; */
+}
+
+.ticket-subject-new {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500; /* Средний */
+    color: #2c3e50; /* Темно-синий/серый */
+    line-height: 1.4;
+    /* Ограничение по количеству строк, если тема очень длинная */
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* Показать только одну строку */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0; /* Убираем лишние отступы у параграфа */
+}
+
+.ticket-preview-new {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #7f8c8d; /* Более светлый серый для превью */
+    line-height: 1.5;
+    /* Ограничение по количеству строк */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Показать максимум две строки */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.ticket-arrow-new {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #bdc3c7; /* Светло-серый для стрелки */
+    transition: color 0.2s ease-in-out;
+}
+
+.ticket-item-new:hover .ticket-arrow-new {
+    color: #1890ff; /* Синий при наведении на заявку */
+}
+
+/* Стили для состояния загрузки и отсутствия заявок (могут уже быть) */
+.loading,
+.no-tickets {
+    text-align: center;
+    padding: 30px;
+    color: #7f8c8d;
+    font-size: 16px;
+}
+
+.error-message { /* Если у вас есть такой класс для ошибок */
+    text-align: center;
+    padding: 20px;
+    color: #e74c3c;
+    background-color: #fceded;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+.filter-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #e1e5eb;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.filter-btn:hover {
+  background: #d1d7e0;
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background: #4299e1;
+  color: white;
+  box-shadow: 0 2px 5px rgba(66, 153, 225, 0.3);
+}
+
+.create-ticket-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #48bb78;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  max-width: 180px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(72, 187, 120, 0.3);
+  margin-left: 3rem;
+}
+
+.create-ticket-btn:hover {
+  background: #38a169;
+  transform: translateY(-1px);
+}
+
+.create-ticket-btn:active {
+  transform: translateY(0);
+}
+
+
+.plus-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.tickets-container {
+  margin-top: 20px;
+}
+
+.ticket-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f9f9fb;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ticket-item:hover {
+  background-color: #f0f2f5;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ticket-info {
+  flex: 1;
+}
+
+.ticket-number {
+  color: #8c8c8c;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.ticket-preview {
+  color: #595959;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 500px;
+}
+
+.ticket-status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-open {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.status-closed {
+  background-color: #f5f5f5;
+  color: #8c8c8c;
+}
+
+.selected-file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin-top: 5px;
+    background-color: #f0f2f5;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.selected-file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.remove-file-btn {
+    background: none;
+    border: none;
+    color: #ff4d4f; /* Красный цвет для кнопки удаления */
+    cursor: pointer;
+    font-weight: bold;
+    padding: 2px 5px;
+    max-width: 20%;
+}
+
+.remove-file-btn:hover {
+    color: #cf1322;
+}
+
+/* Модальные окна */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.modal-content {
+  position: relative;
+  background-color: white;
+  margin: 50px auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-view-content {
+  max-width: 800px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.close-modal {
+  font-size: 24px;
+  cursor: pointer;
+  color: #8c8c8c;
+}
+
+.close-modal:hover {
+  color: #595959;
+}
+
+/* Форма заявки */
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #262626;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.submit-btn {
+  padding: 8px 16px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #40a9ff;
+}
+
+.cancel-btn {
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  color: #595959;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #e8e8e8;
+}
+
+/* Просмотр заявки */
+.ticket-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.status-open {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.status-closed {
+  background-color: #f5f5f5;
+  color: #8c8c8c;
+}
+
+.ticket-details {
+  margin-bottom: 20px;
+}
+
+.ticket-subject {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.ticket-message {
+  background-color: #f9f9fb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+}
+
+.ticket-messages {
+  margin-bottom: 20px;
+}
+
+.message-item {
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.user-message {
+  background-color: #f0f7ff;
+  margin-left: 20px;
+}
+
+.support-message {
+  background-color: #f6ffed;
+  margin-right: 20px;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.message-content {
+  white-space: pre-wrap;
+}
+
+.reply-form-container {
+  margin-bottom: 20px;
+}
+
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reply-form textarea {
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.ticket-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.close-ticket-btn,
+.reopen-ticket-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-ticket-btn {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.close-ticket-btn:hover {
+  background-color: #ff7875;
+}
+
+.reopen-ticket-btn {
+  background-color: #52c41a;
+  color: white;
+}
+
+.reopen-ticket-btn:hover {
+  background-color: #73d13d;
+}
+
+/* Уведомления */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  max-width: 300px;
+}
+
+.notification.success {
+  background-color: #52c41a;
+}
+
+.notification.error {
+  background-color: #ff4d4f;
+}
+
+.notification.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #8c8c8c;
+}
+
+.admin-esc {
+
+}
+
+.content-tech {
+  height: 100vh;
+}
+
+.tickets-header {
+    display: flex;
+    max-width: 100%;
+    align-items: baseline;
+    margin-top: 1rem;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: end;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 700px;
+  border-radius: 8px;
+  position: relative;
+}
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.messages-history {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.message-item {
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 4px;
+}
+.message-item.user {
+  background-color: #e1f5fe; /* Голубоватый для пользователя */
+  text-align: left;
+  margin-right: 20%;
+}
+.message-item.support {
+  background-color: #e8f5e9; /* Зеленоватый для поддержки */
+  text-align: left; /* или right, если хотите выравнивать по-разному */
+  margin-left: 20%;
+}
+.message-sender {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #555;
+}
+.message-time {
+  font-size: 0.8em;
+  color: #777;
+  display: block;
+  text-align: right;
+}
+.message-text {
+  white-space: pre-wrap; /* Сохраняет переносы строк */
+}
+.reply-form textarea {
+  width: calc(100% - 22px); /* Учитываем padding/border */
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.btn-send-reply {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-send-reply:hover {
+  background-color: #0056b3;
+}
+.status-message {
+  margin-top: 10px;
+  font-weight: bold;
+}
+.attachment-link {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.9em;
+}
+.form-group {
+  margin-bottom: 10px;
+}
+
+.document-list { list-style: none; padding: 0; }
+.document-item {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
+  max-width: 750px;
+}
+.document-info .title { font-size: 1.2em; font-weight: bold; }
+.document-info .meta { color: #666; font-size: 0.9em; margin-top: 0.5rem;}
+.download-btn { background-color: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; max-width: 20%;}
+.loading, .error { text-align: center; padding: 20px; font-size: 1.1em; }
+
+.upload-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.upload-form {
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.file-label {
+  display: block;
+  padding: 15px;
+  background: #e9f5ff;
+  border: 2px dashed #4a90e2;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.file-label:hover {
+  background: #d0e7ff;
+}
+
+#videoFile {
+  display: none;
+}
+
+#fileInfo {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+button {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  position: relative;
+}
+
+.loader {
+  display: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.progress-container {
+  margin-top: 15px;
+  display: none;
+}
+
+.progress-bar {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-bar div {
+  height: 100%;
+  background: #4a90e2;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.status-message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+}
+
+.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .tickets-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .create-ticket-btn {
+    align-self: flex-end;
+  }
+
+  .ticket-preview {
+    max-width: 250px;
+  }
+
+  .tickets-container {
+  margin-top: 20px;
+}
+
+.ticket-item-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ticket-item-new:hover {
+  background-color: #f0f2f5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ticket-main-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.ticket-id-new {
+  color: #8c8c8c;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ticket-status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-badge-open, .status-badge-waiting {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+}
+
+.status-badge-closed {
+  background-color: #f5f5f5;
+  color: #8c8c8c;
+  border: 1px solid #d9d9d9;
+}
+
+.ticket-subject-new {
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+  margin: 5px 0;
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticket-preview-new {
+  font-size: 14px;
+  color: #595959;
+  flex: 3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticket-arrow-new {
+  font-size: 20px;
+  color: #bfbfbf;
+}
+
+/* Стили для модального окна просмотра заявки */
+.ticket-view-content {
+  max-width: 800px; /* Увеличим ширину для переписки */
+}
+
+.ticket-status-container {
+  margin-bottom: 15px;
+}
+
+.ticket-details-view {
+  background-color: #f9f9fb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.ticket-details-view p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.ticket-details-view p strong {
+  color: #262626;
+}
+
+.ticket-messages-container {
+  max-height: 400px; /* Ограничим высоту для прокрутки */
+  overflow-y: auto;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #fff;
+}
+
+.message-item {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background-color: #e6f7ff;
+  margin-left: auto; /* Сообщения пользователя справа */
+  border-top-right-radius: 0;
+}
+
+.support-message {
+  background-color: #f6ffed;
+  margin-right: auto; /* Сообщения поддержки слева */
+  border-top-left-radius: 0;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.message-sender {
+  font-weight: bold;
+}
+
+.message-body p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.message-attachments h4 {
+  font-size: 13px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #595959;
+}
+
+.message-attachments ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.message-attachments li a {
+  font-size: 13px;
+  color: #1890ff;
+  text-decoration: none;
+}
+
+.message-attachments li a:hover {
+  text-decoration: underline;
+}
+
+.reply-form-container {
+  margin-top: 20px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 20px;
+}
+
+.ticket-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+}

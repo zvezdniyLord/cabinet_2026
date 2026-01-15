@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .news-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .news-item {
+            flex: 1 1 calc(33.333% - 20px);
+            min-width: 300px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .news-item:hover {
+            transform: translateY(-5px);
+        }
+        .news-image {
+            width: 100%;
+            height: 250px;
+        }
+        .news-content {
+            padding: 15px;
+        }
+        .news-title {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        .news-text {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .news-link {
+            display: inline-block;
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .news-link:hover {
+            text-decoration: underline;
+        }
+        .news-detail {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        .news-detail-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .news-detail-title {
+            margin: 0 0 20px;
+            color: #333;
+        }
+        .news-detail-text {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .news-detail-link {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .news-detail-link:hover {
+            text-decoration: underline;
+        }
+        .archive-title {
+            margin: 40px 0 20px;
+            color: #333;
+        }
+        .archive-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .archive-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .archive-item-title {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+        .archive-item-link {
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        .archive-item-link:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="./index.html" class="back-link">← На главную</a>
+
+        <div id="newsDetail" class="news-detail" style="display: none;">
+            <img id="detailImage" class="news-detail-image" src="" alt="">
+            <h1 id="detailTitle" class="news-detail-title"></h1>
+            <p id="detailText" class="news-detail-text"></p>
+            <a id="detailLink" class="news-detail-link" href="" target="_blank">Подробнее</a>
+        </div>
+
+        <h2>Последние новости</h2>
+        <div id="latestNews" class="news-container">
+            <!-- Последние новости будут загружены здесь -->
+        </div>
+
+        <h2 class="archive-title">Архив новостей</h2>
+        <div id="newsArchive" class="archive-container">
+            <!-- Архив новостей будет загружен здесь -->
+        </div>
+    </div>
+
+    <script>
+        // Получаем ID новости из URL, если есть
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+
+        // Загрузка данных при загрузке страницы
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (newsId) {
+                // Показать детальную страницу новости
+                await loadNewsDetail(newsId);
+            } else {
+                // Показать список новостей
+                await loadLatestNews();
+                await loadNewsArchive();
+            }
+        });
+
+        // Загрузка детальной информации о новости
+        async function loadNewsDetail(id) {
+            try {
+                const response = await fetch(`https://scadaint.ru/api/news/${id}`);
+                if (!response.ok) throw new Error('Новость не найдена');
+
+                const data = await response.json();
+                const news = data.news;
+
+                // Заполняем детальную страницу
+                document.getElementById('newsDetail').style.display = 'block';
+                document.getElementById('detailTitle').textContent = news.title;
+                document.getElementById('detailText').textContent = news.full_text || news.short_text;
+
+                if (news.image_path) {
+                    document.getElementById('detailImage').src = `/server${news.image_path}`;
+                    document.getElementById('detailImage').style.width = "350px";
+                    document.getElementById('detailImage').style.height = "250px"
+                    document.getElementById('detailImage').style.display = 'none';
+                } else {
+                    document.getElementById('detailImage').style.display = 'none';
+                }
+
+                if (news.external_link) {
+                    document.getElementById('detailLink').href = news.external_link;
+                    document.getElementById('detailLink').style.display = 'inline-block';
+                } else {
+                    document.getElementById('detailLink').style.display = 'none';
+                }
+
+                // Скрываем списки новостей
+                document.getElementById('latestNews').style.display = 'none';
+                document.getElementById('newsArchive').style.display = 'none';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Не удалось загрузить новость');
+                window.location.href = '/news.html';
+            }
+        }
+
+        // Загрузка последних новостей
+        async function loadLatestNews() {
+            try {
+                const response = await fetch('https://scadaint.ru/api/news/latest');
+                if (!response.ok) throw new Error('Ошибка загрузки новостей');
+
+                const data = await response.json();
+                renderLatestNews(data.news);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('latestNews').innerHTML = '<p>Не удалось загрузить новости</p>';
+            }
+        }
+
+        // Отображение последних новостей
+        function renderLatestNews(news) {
+            const container = document.getElementById('latestNews');
+
+            if (news.length === 0) {
+                container.innerHTML = '<p>Новостей пока нет</p>';
+                return;
+            }
+
+            container.innerHTML = news.map(item => `
+                <div class="news-item">
+                    ${item.image_path ? `<img src="/server/${item.image_path}" class="news-image" alt="${item.title}">` : ''}
+                    <div class="news-content">
+                        <h3 class="news-title">${item.title}</h3>
+                        <p class="news-text">${item.short_text}</p>
+                        <a href="news.html?id=${item.id}" class="news-link">Читать далее</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Загрузка архива новостей
+        async function loadNewsArchive() {
+            try {
+                const response = await fetch('https://scadaint.ru/api/news/archive');
+                if (!response.ok) throw new Error('Ошибка загрузки архива');
+
+                const data = await response.json();
+                renderNewsArchive(data.news);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('newsArchive').innerHTML = '<p>Не удалось загрузить архив</p>';
+            }
+        }
+
+        // Отображение архива новостей
+        function renderNewsArchive(news) {
+            const container = document.getElementById('newsArchive');
+
+            if (news.length === 0) {
+                container.innerHTML = '<p>В архиве пока нет новостей</p>';
+                return;
+            }
+
+            container.innerHTML = news.map(item => `
+                <div class="archive-item">
+                    <h3 class="archive-item-title">
+                        <a href="news.html?id=${item.id}" class="archive-item-link">${item.title}</a>
+                    </h3>
+                    <small>${new Date(item.created_at).toLocaleDateString()}</small>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

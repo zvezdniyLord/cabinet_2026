@@ -1,0 +1,344 @@
+:root {
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --gray: #e9ecef;
+    --gray-dark: #6c757d;
+    --dark: #343a40;
+    --primary: #007bff;
+    --primary-dark: #0056b3;
+    --primary-light: #e7f1ff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --border-color: #dee2e6;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Стили для формы ЛК */
+.form-account.lk-form {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 32px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.form-account.lk-form:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.form-account.lk-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+/* Группы полей с улучшенной структурой */
+.form-field-group {
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.form-field-group:last-of-type {
+    margin-bottom: 0;
+}
+
+.form-field-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-left: 12px;
+}
+
+.form-field-group label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 16px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+/* Стили для заголовков полей */
+.form-account.lk-form p {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 12px;
+}
+
+/* Стили для полей ввода */
+.form-account-input.lk-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--dark);
+    background: var(--light-gray);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition);
+    outline: none;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-account-input.lk-input:focus {
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15),
+                inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.form-account-input.lk-input::placeholder {
+    color: var(--gray-dark);
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+.form-account-input.lk-input:hover:not(:focus) {
+    border-color: #adb5bd;
+    background: var(--white);
+}
+
+/* Особые стили для email поля */
+.form-account-input.lk-input.l6 {
+    background: var(--primary-light);
+    border-color: rgba(0, 123, 255, 0.2);
+}
+
+.form-account-input.lk-input.l6:focus {
+    background: var(--white);
+}
+
+/* Контейнер для кнопки */
+.btn__submit-main {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Стили для кнопки сохранения */
+.btn__product-submit.btn-save-data {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: var(--border-radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+.btn__product-submit.btn-save-data:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.btn__product-submit.btn-save-data:active:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.btn__product-submit.btn-save-data:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn__product-submit.btn-save-data:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn__product-submit.btn-save-data:hover::after {
+    left: 100%;
+}
+
+/* Анимация успешного сохранения */
+.btn__product-submit.btn-save-data.success {
+    background: linear-gradient(135deg, var(--success), #1e7e34);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(40, 167, 69, 0.5);
+    }
+}
+
+/* Сообщения об успехе/ошибке */
+.form-message {
+    margin-top: 16px;
+    padding: 14px 20px;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+    animation: slideIn 0.3s ease-out;
+    border: 1px solid transparent;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-message.success {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success);
+    border-color: rgba(40, 167, 69, 0.2);
+    display: block;
+}
+
+.form-message.error {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-color: rgba(220, 53, 69, 0.2);
+    display: block;
+}
+
+/* Анимация тряски при ошибке валидации */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.form-account-input.lk-input.error {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.05);
+    animation: shake 0.5s ease-in-out;
+}
+
+
+.form-account-input.lk-input:focus {
+    background-position: left 18px center;
+}
+
+/* Подсказки под полями */
+.field-hint {
+    font-size: 12px;
+    color: var(--gray-dark);
+    margin-top: 6px;
+    padding-left: 50px;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: var(--transition);
+}
+
+.form-account-input.lk-input:focus + .field-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .form-account.lk-form {
+        padding: 24px;
+    }
+    
+    .form-account-input.lk-input {
+        padding: 14px 16px 14px 46px;
+        font-size: 15px;
+    }
+    
+    .form-account.lk-form p {
+        font-size: 12px;
+    }
+    
+    .btn__product-submit.btn-save-data {
+        padding: 14px 24px;
+        font-size: 14px;
+        min-width: 180px;
+    }
+    
+    .form-account-input.lk-input {
+        background-size: 18px;
+        background-position: left 16px center;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-account.lk-form {
+        padding: 20px;
+    }
+    
+    .form-account-input.lk-input {
+        padding: 12px 14px 12px 44px;
+    }
+    
+    .btn__submit-main {
+        margin-top: 32px;
+        padding-top: 20px;
+    }
+    
+    .btn__product-submit.btn-save-data {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+/* Состояние только для чтения */
+.form-account-input.lk-input[readonly] {
+    background-color: var(--gray);
+    border-color: var(--gray);
+    color: var(--gray-dark);
+    cursor: not-allowed;
+}
+
+.form-account-input.lk-input[readonly]:focus {
+    box-shadow: none;
+    transform: none;
+    border-color: var(--gray);
+}
