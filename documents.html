@@ -123,7 +123,7 @@
                     <a class="header__link" href="../contacts.html">контакты</a>
                 </p>-->
             </div>
-            <!--<a class="tel" href="+7 (3822) 601-000">+7 (3822) 601-000</a>-->
+            <a class="tel" href="+7 (3822) 601-000">+7 (3822) 601-000</a>
         </div>
         <div class="header__auth-links">
             <picture>
@@ -208,7 +208,7 @@
                         <path d="M2 2L10 11L2 20" stroke="white" stroke-width="4" stroke-linecap="round"/>
                     </svg>
                 </div>
-                <div class="supports__mobile-list mobile-list">
+               <div class="supports__mobile-list mobile-list">
                     <div class="select__ll" >
                         <div class="ll">
                             <a href="./supports.html">
@@ -247,7 +247,7 @@
         </nav>
     </div>
     <div class="container">
-        <div class="content content-tech">
+        <div class="content content-tech" style="align-items: baseline;">
             <div class="list__products left__block">
                 <a href="./lk.html"><button class="btn__list__products">Личные данные</button></a>
                 <a href="./history.html"><button class="mt-20 btn__list__products">История заявок</button></a>
@@ -259,8 +259,9 @@
                     <h2 class="title__blue-fz30" style="margin-right: 150px;">Документация</h2>
                 </div>
                 <div id="status"></div>
-                <ul id="documentList" class="document-list">
-
+	
+	        <ul id="documentList" class="document-list">
+		
                 </ul>
             </div>
         </div>
@@ -412,8 +413,9 @@ async function loadDocuments() {
 
         // Проверяем структуру ответа
         if (!data || !Array.isArray(data.documents) || data.documents.length === 0) {
-            statusDiv.innerHTML = `<p>Документы не найдены.</p>`;
-            return;
+            //statusDiv.innerHTML = `<p>Документы не найдены.</p>`;
+              statusDiv.innerHTML = `<p></p>`;
+	      return;
         }
 
         // Очищаем статус
@@ -439,7 +441,7 @@ async function loadDocuments() {
 
             li.innerHTML = `
                 <div class="document-info">
-                    <div class="title">${escapeHtml(title)}</div> <!-- Экранируем HTML -->
+                    <div class="title">${escapeHtml(title)}</div>  
                     <div class="meta">
                         Тип: ${escapeHtml(fileType)} |
                         Размер: ${fileSizeKB} KB |
