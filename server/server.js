@@ -27,8 +27,11 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 app.set('trust proxy', 1);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true, limit: '1gb' }));
+app.use(express.urlencoded());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 
 async function sendEmail(to, subject, text, html, options = {}) {
     console.log(`\n--- sendEmail CALLED ---`);
@@ -172,7 +175,7 @@ app.use(express.urlencoded({ extended: true })); // Парсер для URL-enco
 const sendTokenCookie = (res, token) => {
     const cookieOptions = {
         httpOnly: true,
-        secure: false, // <-- В production - только через HTTPS
+        secure: true, // <-- В production - только через HTTPS
         sameSite: 'Strict',
         maxAge: parseInt(process.env.COOKIE_MAX_AGE || '3600000', 10),
         path: '/'
@@ -242,7 +245,7 @@ app.post('/api/register', async (req, res) => {
         try {
             await sendEmail(
                 //'eat@elesy.ru', // Email админа для уведомлений
-		`davaa@elesy.ru`,
+		`eat@elesy.ru`,
                 `Новая заявка на регистрацию: ${newUser.fio}`,
                 `Пользователь ${newUser.fio} (${newUser.email}) подал заявку на регистрацию.\nКомпания: ${company}\nДолжность: ${position}\n\nПожалуйста, рассмотрите заявку в админ-панели.`,
                 `<p>Пользователь <strong>${newUser.fio}</strong> (<code>${newUser.email}</code>) подал заявку на регистрацию.</p>
@@ -631,9 +634,9 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
-    /*limits: {
-        fileSize: 5 * 1024 * 1024 * 1024 // 100 MB (максимальный размер файла)
-    }*/
+    limits: {
+        fileSize: 1 * 1024 * 1024 * 1024 // 100 MB (максимальный размер файла)
+    }
 });
 
 // Middleware для проверки прав администратора
@@ -752,7 +755,26 @@ app.get('/api/admin/documents/:id', verifyAdminToken, async (req, res) => {
 
 // 3. Создание нового документа
 app.post('/api/admin/documents', verifyAdminToken, upload.single('document'), async (req, res) => {
-    console.log(req.file);
+
+
+ console.log('\n' + '='.repeat(60));
+    console.log('📁 [DOCUMENTS UPLOAD] POST /api/admin/documents');
+    console.log('📦 Request body fields:', Object.keys(req.body));
+    console.log('📝 Title from form:', req.body.title);
+    
+    if (req.file) {
+        console.log('✅ File received:', {
+            name: req.file.originalname,
+            size: `${(req.file.size / 1024 / 1024).toFixed(2)} MB`,
+            type: req.file.mimetype,
+            path: req.file.path
+        });
+    } else {
+        console.log('❌ NO FILE RECEIVED!');
+        console.log('Request keys:', Object.keys(req));
+    }
+
+
     const { title } = req.body;
 
     if (!title || typeof title !== 'string' || title.trim().length === 0) {
@@ -793,8 +815,8 @@ app.post('/api/admin/documents', verifyAdminToken, upload.single('document'), as
         });
     }
 
-    const maxSize = 50 * 1024 * 1024; 
-    if (fileSize > maxSize) {
+    const maxSize = 100 * 1024 * 1024; 
+    /*if (fileSize > maxSize) {
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
         }
@@ -805,7 +827,7 @@ app.post('/api/admin/documents', verifyAdminToken, upload.single('document'), as
                 receivedSize: `${(fileSize / (1024 * 1024)).toFixed(2)}MB`
             }
         });
-    }
+    }*/
 
     let client;
     try {
@@ -1231,8 +1253,9 @@ app.post('/api/tickets', verifyToken, upload.array('attachments', 5), async (req
 });
 
 
-// 1. Получение списка заявок пользователя
-app.get('/api/tickets', verifyToken, async (req, res) => {
+//РАБОЧИЙ ЭНДПОИНТ
+//1. Получение списка заявок пользователя
+/*app.get('/api/tickets', verifyToken, async (req, res) => {
     const userId = req.user.userId;
     const statusFilter = req.query.status; // 'open', 'closed', 'all'
 
@@ -1265,6 +1288,218 @@ app.get('/api/tickets', verifyToken, async (req, res) => {
     } catch (error) {
         console.error('Error fetching tickets:', error);
         res.status(500).json({ message: 'Не удалось загрузить список заявок' });
+    } finally {
+        if (client) client.release();
+    }
+});*/
+
+// GET /api/tickets - получить заявки пользователя
+// GET /api/tickets?scope=company - получить заявки всей компании
+app.get('/api/tickets', verifyToken, async (req, res) => {
+    const userId = req.user.userId;
+    const statusFilter = req.query.status; // 'open', 'closed', 'all'
+    const scope = req.query.scope || 'user'; // 'user' или 'company'
+    
+    let client;
+    try {
+        client = await pool.connect();
+        
+        // Получаем информацию о текущем пользователе (нужно для company scope)
+        const userResult = await client.query(
+            'SELECT company FROM users WHERE id = $1',
+            [userId]
+        );
+        
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+        
+        const userCompany = userResult.rows[0].company;
+        
+        let query;
+        let queryParams = [];
+        let paramIndex = 1;
+        
+        if (scope === 'company' && userCompany) {
+            // Получаем заявки всех сотрудников компании
+            query = `
+                SELECT 
+                    t.id, 
+                    t.ticket_number, 
+                    t.subject, 
+                    ts.name as status,
+                    t.created_at, 
+                    t.updated_at, 
+                    t.closed_at,
+                    t.user_id,
+                    u.fio as user_fio,
+                    u.email as user_email,
+                    (SELECT tm.message FROM ticket_messages tm
+                     WHERE tm.ticket_id = t.id
+                     ORDER BY tm.created_at ASC LIMIT 1) as first_message
+                FROM tickets t
+                JOIN ticket_statuses ts ON t.status_id = ts.id
+                JOIN users u ON t.user_id = u.id
+                WHERE u.company = $1 AND u.account_status = 'active'
+            `;
+            queryParams = [userCompany];
+            paramIndex = 2;
+            
+            // Добавляем фильтр по статусу
+            if (statusFilter === 'open') {
+                query += ` AND ts.name != 'closed'`;
+            } else if (statusFilter === 'closed') {
+                query += ` AND ts.name = 'closed'`;
+            }
+            
+            query += ` ORDER BY t.updated_at DESC`;
+            
+        } else {
+            // Только свои заявки
+            query = `
+                SELECT t.id, t.ticket_number, t.subject, ts.name as status,
+                       t.created_at, t.updated_at, t.closed_at,
+                       (SELECT tm.message FROM ticket_messages tm
+                        WHERE tm.ticket_id = t.id
+                        ORDER BY tm.created_at ASC LIMIT 1) as first_message
+                FROM tickets t
+                JOIN ticket_statuses ts ON t.status_id = ts.id
+                WHERE t.user_id = $1
+            `;
+            queryParams = [userId];
+            paramIndex = 2;
+            
+            if (statusFilter === 'open') {
+                query += ` AND ts.name != 'closed'`;
+            } else if (statusFilter === 'closed') {
+                query += ` AND ts.name = 'closed'`;
+            }
+            
+            query += ` ORDER BY t.updated_at DESC`;
+        }
+        
+        const result = await client.query(query, queryParams);
+        
+        res.status(200).json({ 
+            tickets: result.rows,
+            scope: scope,
+            company: scope === 'company' ? userCompany : null
+        });
+        
+    } catch (error) {
+        console.error('Error fetching tickets:', error);
+        res.status(500).json({ message: 'Не удалось загрузить список заявок' });
+    } finally {
+        if (client) client.release();
+    }
+});
+
+// GET /api/company/colleagues - получить список коллег по компании
+app.get('/api/company/colleagues', verifyToken, async (req, res) => {
+    const userId = req.user.userId;
+    
+    let client;
+    try {
+        client = await pool.connect();
+        
+        // Получаем компанию пользователя
+        const userResult = await client.query(
+            'SELECT company FROM users WHERE id = $1',
+            [userId]
+        );
+        
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+        
+        const userCompany = userResult.rows[0].company;
+        
+        if (!userCompany) {
+            return res.status(200).json({ 
+                colleagues: [],
+                company: null,
+                message: 'У вас не указана компания'
+            });
+        }
+        
+        // Получаем всех активных сотрудников этой компании
+        const colleaguesResult = await client.query(
+            `SELECT id, fio, email, position 
+             FROM users 
+             WHERE company = $1 
+               AND id != $2 
+               AND account_status = 'active'
+             ORDER BY fio ASC`,
+            [userCompany, userId]
+        );
+        
+        res.status(200).json({
+            colleagues: colleaguesResult.rows,
+            company: userCompany
+        });
+        
+    } catch (error) {
+        console.error('Error fetching colleagues:', error);
+        res.status(500).json({ message: 'Не удалось загрузить список коллег' });
+    } finally {
+        if (client) client.release();
+    }
+});
+
+// GET /api/tickets/unread/count - количество непрочитанных ответов
+app.get('/api/tickets/unread/count', verifyToken, async (req, res) => {
+    const userId = req.user.userId;
+    
+    let client;
+    try {
+        client = await pool.connect();
+        
+        // Получаем компанию пользователя
+        const userResult = await client.query(
+            'SELECT company FROM users WHERE id = $1',
+            [userId]
+        );
+        
+        const userCompany = userResult.rows[0]?.company;
+        
+        let query;
+        let queryParams;
+        
+        if (userCompany) {
+            // Непрочитанные сообщения во всех заявках компании
+            query = `
+                SELECT COUNT(tm.id) as unread_count
+                FROM ticket_messages tm
+                JOIN tickets t ON tm.ticket_id = t.id
+                JOIN users u ON t.user_id = u.id
+                WHERE u.company = $1 
+                  AND tm.sender_type = 'support'
+                  AND tm.is_read = false
+                  AND t.status_id != (SELECT id FROM ticket_statuses WHERE name = 'closed')
+            `;
+            queryParams = [userCompany];
+        } else {
+            // Только свои непрочитанные
+            query = `
+                SELECT COUNT(tm.id) as unread_count
+                FROM ticket_messages tm
+                JOIN tickets t ON tm.ticket_id = t.id
+                WHERE t.user_id = $1 
+                  AND tm.sender_type = 'support'
+                  AND tm.is_read = false
+            `;
+            queryParams = [userId];
+        }
+        
+        const result = await client.query(query, queryParams);
+        
+        res.status(200).json({
+            unread_count: parseInt(result.rows[0].unread_count, 10)
+        });
+        
+    } catch (error) {
+        console.error('Error counting unread messages:', error);
+        res.status(500).json({ message: 'Не удалось подсчитать непрочитанные сообщения' });
     } finally {
         if (client) client.release();
     }
@@ -1983,8 +2218,10 @@ app.post('/api/receive-email', async (req, res) => {
     }
 });
 
+
+//РАБОЧАЯ 7.
 // 7. Получение детальной информации о заявке
-app.get('/api/tickets/:ticketNumber', verifyToken, async (req, res) => {
+/*app.get('/api/tickets/:ticketNumber', verifyToken, async (req, res) => {
     const userId = req.user.userId;
     const { ticketNumber } = req.params;
 
@@ -2083,7 +2320,150 @@ app.get('/api/tickets/:ticketNumber', verifyToken, async (req, res) => {
     } finally {
         if (client) client.release();
     }
+});*/
+
+// 7. Получение детальной информации о заявке
+app.get('/api/tickets/:ticketNumber', verifyToken, async (req, res) => {
+    const userId = req.user.userId;
+    const { ticketNumber } = req.params;
+
+    let client;
+    try {
+        client = await pool.connect();
+
+        // Получаем информацию о заявке и ее владельце
+        const ticketResult = await client.query(
+            `SELECT t.id, t.ticket_number, t.subject, ts.name as status,
+                    t.created_at, t.updated_at, t.closed_at, t.user_id, t.email_thread_id,
+                    u.company as owner_company, u.email as owner_email, u.fio as owner_fio
+             FROM tickets t
+             JOIN ticket_statuses ts ON t.status_id = ts.id
+             JOIN users u ON t.user_id = u.id
+             WHERE t.ticket_number = $1`,
+            [ticketNumber]
+        );
+
+        if (ticketResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Заявка не найдена' });
+        }
+
+        const ticket = ticketResult.rows[0];
+
+        // Получаем компанию текущего пользователя
+        const currentUserResult = await client.query(
+            'SELECT company FROM users WHERE id = $1',
+            [userId]
+        );
+        
+        const currentUserCompany = currentUserResult.rows[0]?.company;
+
+        // ИЗМЕНЕНО: Проверяем права доступа
+        const isOwner = ticket.user_id === userId;
+        const isSameCompany = currentUserCompany && 
+                             ticket.owner_company && 
+                             currentUserCompany === ticket.owner_company;
+        
+        // Разрешаем доступ если:
+        // 1. Это владелец заявки ИЛИ
+        // 2. Это коллега по компании (у обоих есть компания и они совпадают)
+        if (!isOwner && !isSameCompany) {
+            console.warn(`User ${userId} (company: ${currentUserCompany}) attempted to access ticket ${ticketNumber} owned by user ${ticket.user_id} (company: ${ticket.owner_company}) - ACCESS DENIED`);
+            return res.status(403).json({ 
+                message: 'У вас нет доступа к этой заявке. Вы можете просматривать только свои заявки или заявки сотрудников вашей компании.' 
+            });
+        }
+
+        console.log(`User ${userId} (company: ${currentUserCompany}) accessing ticket ${ticketNumber} owned by ${ticket.user_id} (company: ${ticket.owner_company}) - ACCESS GRANTED`);
+
+        // Получаем все сообщения в заявке
+        const messagesResult = await client.query(
+            `SELECT tm.id, tm.sender_type, tm.sender_id, tm.sender_email, tm.message,
+                    tm.created_at, tm.is_read, tm.email_id,
+                    CASE 
+                        WHEN tm.sender_type = 'user' AND tm.sender_id = $2 THEN 'Вы'
+                        WHEN tm.sender_type = 'user' THEN u_sender.fio
+                        WHEN tm.sender_type = 'support' THEN 'Техподдержка ИНТ'
+                        ELSE 'Система'
+                    END as sender_name,
+                    tm.sender_type,
+                    tm.sender_id
+             FROM ticket_messages tm
+             LEFT JOIN users u_sender ON tm.sender_id = u_sender.id AND tm.sender_type = 'user'
+             WHERE tm.ticket_id = $1
+             ORDER BY tm.created_at ASC`,
+            [ticket.id, userId] // Передаем userId для подстановки "Вы"
+        );
+
+        // Получаем вложения
+        const messageIds = messagesResult.rows.map(m => m.id);
+        let attachmentsResult = { rows: [] };
+
+        if (messageIds.length > 0) {
+            attachmentsResult = await client.query(
+                `SELECT * FROM ticket_attachments WHERE message_id = ANY($1)`,
+                [messageIds]
+            );
+        }
+
+        const attachmentsByMessageId = {};
+        attachmentsResult.rows.forEach(attachment => {
+            if (!attachmentsByMessageId[attachment.message_id]) {
+                attachmentsByMessageId[attachment.message_id] = [];
+            }
+            attachmentsByMessageId[attachment.message_id].push(attachment);
+        });
+
+        const messagesWithAttachments = messagesResult.rows.map(message => {
+            return {
+                ...message,
+                attachments: attachmentsByMessageId[message.id] || []
+            };
+        });
+
+        // Отмечаем сообщения от техподдержки как прочитанные (только для владельца)
+        if (isOwner) {
+            await client.query(
+                `UPDATE ticket_messages
+                 SET is_read = TRUE
+                 WHERE ticket_id = $1 AND sender_type = 'support' AND is_read = FALSE`,
+                [ticket.id]
+            );
+        }
+
+        // Добавляем информацию о правах доступа в ответ
+        const accessInfo = {
+            is_owner: isOwner,
+            is_colleague: isSameCompany,
+            owner_name: ticket.owner_fio,
+            owner_email: ticket.owner_email
+        };
+
+        res.status(200).json({
+            ticket: {
+                id: ticket.id,
+                ticket_number: ticket.ticket_number,
+                subject: ticket.subject,
+                status: ticket.status,
+                created_at: ticket.created_at,
+                updated_at: ticket.updated_at,
+                closed_at: ticket.closed_at,
+                thread_id: ticket.email_thread_id,
+                user_id: ticket.user_id,
+                user_fio: ticket.owner_fio,
+                user_email: ticket.owner_email,
+                access: accessInfo // Добавляем информацию о доступе
+            },
+            messages: messagesWithAttachments
+        });
+
+    } catch (error) {
+        console.error('Error fetching ticket details:', error);
+        res.status(500).json({ message: 'Не удалось загрузить информацию о заявке' });
+    } finally {
+        if (client) client.release();
+    }
 });
+
 
 const superAdminAuthLimiter = rateLimit({ // Переименовал для ясности
     windowMs: 15 * 60 * 1000, // 15 минут
@@ -2760,9 +3140,9 @@ const videoUpload = multer({
             cb(new Error('Допустимы только MP4 и WebM видео'), false);
         }
     },
-    /*limits: {
+    limits: {
         fileSize: 5 * 1024 * 1024 * 1024, // 5GB
-    }*/
+    }
 });
 
 app.get('/api/admin/videos', verifyAdminToken, async (req, res) => {
@@ -2829,9 +3209,9 @@ app.post('/api/admin/videos', verifyAdminToken, (req, res, next) => {
 
             cb(null, true);
         },
-        /*limits: {
+        limits: {
             fileSize: 5 * 1024 * 1024 * 1024 // 5GB
-        }*/
+        }
     }).fields([
         { name: 'video', maxCount: 1 },
         { name: 'thumbnail', maxCount: 1 }
@@ -3379,6 +3759,77 @@ function formatClientDate(dateString) {
         year: 'numeric'
     });
 }
+
+
+app.post('/api/test-upload', upload.single('file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({
+            success: false,
+            message: 'Файл не загружен'
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: 'Файл успешно загружен',
+        fileInfo: {
+            originalName: req.file.originalname,
+            filename: req.file.filename,
+            size: req.file.size,
+            path: req.file.path,
+            mimetype: req.file.mimetype
+        }
+    });
+});
+
+// Эндпоинт для получения информации о лимитах (без авторизации)
+app.get('/api/upload-limits', (req, res) => {
+    res.status(200).json({
+        limits: {
+            // Лимиты Express по умолчанию
+            expressJsonLimit: '100mb',
+            expressUrlencodedLimit: '100mb',
+            // Информация о multer лимитах
+            multerFileSize: '100MB (в коде)',
+            // Рекомендации для загрузки файлов
+            recommended: 'Установите лимиты в коде или конфигурации сервера'
+        }
+    });
+});
+
+// Эндпоинт для тестирования админской загрузки БЕЗ ПАРОЛЯ
+app.post('/api/test-admin-upload', upload.single('document'), (req, res) => {
+    const { title } = req.body;
+    
+    if (!title) {
+        return res.status(400).json({
+            success: false,
+            message: 'Необходимо указать название документа'
+        });
+    }
+
+    if (!req.file) {
+        return res.status(400).json({
+            success: false,
+            message: 'Файл не загружен'
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: 'Тест админской загрузки прошел успешно (без сохранения в БД)',
+        testInfo: {
+            title: title,
+            file: {
+                originalName: req.file.originalname,
+                size: req.file.size,
+                path: req.file.path,
+                mimetype: req.file.mimetype
+            }
+        }
+    });
+});
+
 
 app.use((err, req, res, next) => {
     console.error('!!! UNHANDLED ERROR:', err.stack);
